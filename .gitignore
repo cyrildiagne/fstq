@@ -1,5 +1,9 @@
+creds
 .firebaserc
 .DS_Store
+.vscode
+venv
+__pycache__
 
 # Logs
 logs

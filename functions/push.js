@@ -16,15 +16,19 @@ exports.push = functions.https.onRequest((req, res) => {
     try {
       // Grab the payload.
       const { payload, queue } = JSON.parse(req.body.data)
-      // Push the task to Cloud Firestore using the Firebase Admin SDK.
-      const doc = await admin
-        .firestore()
-        .collection('queues')
-        .doc(queue)
-        .collection('queued')
-        .add({ payload, dateAdded: admin.firestore.FieldValue.serverTimestamp() })
+      const queueDoc = admin.firestore().collection('queues').doc(queue)
+      // Add empty result for the client to listen to.
+      const doc = await queueDoc.collection('results').add({
+        status: 'queued',
+        dateAdded: admin.firestore.FieldValue.serverTimestamp(),
+      })
+      // Push queue item with payload.
+      await queueDoc.collection('queued').doc(doc.id).set({
+        payload,
+        dateAdded: admin.firestore.FieldValue.serverTimestamp(),
+      })
       // Send back a message that we've succesfully written the message
-      res.json({ data: { id: doc.id, status: 'added' } })
+      res.json({ data: { id: doc.id, status: 'queued' } })
     } catch (e) {
       console.log(e)
       res.status(500).json({ error: e })

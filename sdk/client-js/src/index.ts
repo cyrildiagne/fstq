@@ -1,6 +1,6 @@
-import * as firebase from "firebase/app"
-import "firebase/firestore"
-import "firebase/functions"
+import * as firebase from 'firebase/app'
+import 'firebase/firestore'
+import 'firebase/functions'
 
 let app: firebase.app.App
 
@@ -16,7 +16,6 @@ interface Task {
 
 async function init(config: any) {
   app = firebase.initializeApp(config)
-
   // Use the local functions in dev environment.
   if (process.env.NODE_ENV === 'development') {
     console.log('using dev functions')
@@ -33,12 +32,23 @@ async function push(queue: string, payload: any): Promise<Task> {
 
     // Listen for changes on returned document and wait for completion.
     const prom = new Promise((resolve, reject) => {
-      const result = { text: 'complete' }
-      resolve(result)
+      const doc = firebase
+        .firestore()
+        .collection('queues')
+        .doc(queue)
+        .collection('results')
+        .doc(id)
+      const unsub = doc.onSnapshot(snap => {
+        console.log(snap.data())
+        const result = snap.data()
+        if (result.status === 'complete') {
+          resolve(result)
+          unsub()
+        }
+      })
     })
 
     return { id, status, result: () => prom } as Task
-
   } catch (e) {
     throw e
   }
@@ -46,5 +56,5 @@ async function push(queue: string, payload: any): Promise<Task> {
 
 export default {
   init,
-  push
+  push,
 } as FTQ

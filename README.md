@@ -6,31 +6,38 @@
 
 ### 1 - Add items to the queue using the [Javascript Client SDK](#):
 
-```js
-import ftq from "firestore-task-queue";
-const queue = ftq.init("my-queue", FIREBASE_CLIENT_CONFIG);
-```
+First initialize the queue with a name and your firebase project client config:
 
 ```js
-const task = await queue.push({ text: "hello world" });
-const result = await task.result();
+import ftq from 'firestore-task-queue'
+const queue = ftq.init('my-queue', FIREBASE_CLIENT_CONFIG)
+```
+
+Then add items to the queue:
+
+```js
+const task = await ftq.push('my-queue', { text: 'hello world' })
+const result = await task.result()
+// Will print: {'text': 'dlrow olleh'}
 ```
 
 - `queue.push()` returns a `Task` object as soon as the item has been added to
-  the queue (normally takes less than 100ms).
+  the queue (normally takes a few milliseconds).
 
-- `task.result()` provides an easy wait to wait for task completion which can
+- `task.result()` provides an easy way to wait for task completion which can
   take an undefined amount of time.
 
 ### 2 - Process queue items using the [Python Worker SDK](#):
 
 ```py
-from ftq import ftq
+import ftq
+
+def reverse(text):
+  return text[::-1]
 
 def process(items):
-    results = [x for x in items]
-    return results
+    results = [reverse(item['text']) for item in items]
+    return [{'text': t} for t in results]
 
-ftq.init(FIREBASE_CREDENTIALS_JSON, name='My Worker Name')
-ftq.attach('my-queue', process, batch_size=5)
+ftq.start('my-queue', process)
 ```
