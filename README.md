@@ -18,17 +18,12 @@ render...etc) using Firebase.
 
 ## 1. Create and configure a Firebase project
 
-1. Install and initialize the [Firebase tools](#)
+1. Create a [Firebase]() project
+2. Install and initialize the [Firebase tools](#)
 
    ```
    npm install -g firebase-tools
    firebase init
-   ```
-
-2. Create a Firebase project
-
-   ```
-   firebase project:create
    ```
 
 3. Setup the Firebase project for FSTQ
@@ -36,8 +31,6 @@ render...etc) using Firebase.
    ```sh
    ./scripts/setup_firebase.sh
    ```
-
-## 2. Add items to the queue
 
 Items can be added to the queue using the [javascript client lib](sdk/client-js)
 
@@ -57,7 +50,7 @@ for (let i = 0; i < 1000; i++) {
 To run the example's client:
 
 - `cd example/client`
-- Create a file `src/firebase-config.js` that exports your firebase config.
+- Create a file `src/firebase-config.js` that exports your [firebase's web config]().
 - Run `yarn install`
 - Run `yarn run dev`
 - Navigate to [http://localhost:8080](http://localhost:8080)
@@ -90,17 +83,13 @@ To run example's worker:
 
   - Start the example worker using Docker
 
-        ```sh
-        cd example/worker
-        export GOOGLE_APPLICATION_CREDENTIALS='/path/to/worker/credentials.json'
-        docker build . -t fstq-demo
-        docker run -rm \
-          -v $GOOGLE_APPLICATION_CREDENTIALS:'/credentials.json' \
-          -e GOOGLE_APPLICATION_CREDENTIALS='/credentials.json' \
-          fstq-demo -- \
-              --queue 'fstq-demo' \
-              --max_batch_size 5
-        ```
+    ```sh
+    cd example/worker
+    ../../scripts/run_locally.sh . \
+        --queue 'fstq-demo' \
+        --credentials '/path/to/worker/credentials.json' \
+        --max_batch_size 5
+    ```
 
     </p>
 
@@ -115,11 +104,11 @@ To run example's worker:
     cd example/worker
     ../../scripts/deploy_gke.sh . \
         --queue 'fstq-demo' \
+        --credentials '/path/to/worker/credentials.json' \
         --max_batch_size 5 \
         --gpu nvidia-t4 \
         --min_workers 0 \
-        --max_workers 5 \
-        --credentials '/path/to/worker/credentials.json'
+        --max_workers 5
     ```
 
     </p>
