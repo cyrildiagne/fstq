@@ -26,13 +26,13 @@ render...etc) using Firebase.
    firebase init
    ```
 
-3. Install the fstq CLI and lib
+3. Install the fstq CLI
 
    ```sh
    pip install fstq
    ```
 
-4. Setup the Firebase project for FSTQ
+4. Initialize the Firebase project for FSTQ
 
    ```sh
    fstq init <firebase-project-id>
@@ -43,7 +43,7 @@ render...etc) using Firebase.
 - Items can be added to a processing queue using the [javascript client lib](sdk/client-js).
 
   The example client [example/client/src/index.js]() shows how to add items
-  to a queue we want to call `fstq-demo`:
+  to a queue called`fstq-demo` (the queue is created after with the first item added):
 
   ```js
   async function process() {
