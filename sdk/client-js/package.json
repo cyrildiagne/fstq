@@ -1,5 +1,5 @@
 {
-  "name": "ftq",
+  "name": "fstq",
   "version": "1.0.0",
   "description": "Firestore Task Queue",
   "main": "dist/index.js",
