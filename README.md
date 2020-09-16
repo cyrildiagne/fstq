@@ -35,7 +35,7 @@ render...etc) using Firebase.
 
 Items can be added to a processing queue using the [javascript client lib](sdk/client-js).
 
-The example [example/client/src/index.js]() shows how to add items to the queue:
+The example client [example/client/src/index.js]() shows how to add items to a queue we want to call `fstq-demo`:
 
 ```js
 async function process() {
@@ -60,7 +60,7 @@ To run the example client:
 
 Items can be pulled from the queue and processed using the [python worker lib](sdl/worker-python).
 
-The example [example/worker/main.py]() shows how to processes incoming items:
+The example worker [example/worker/main.py]() shows how to processes incoming items:
 
 ```python
 import fstq
@@ -74,8 +74,7 @@ def process(items):
 
 To run the example worker:
 
-- Generate a `firebase_credentials` json for your worker in
-  [the firebase console](#)
+- Generate a credentials json file for your worker in [the firebase console](#)
 
 - <details><summary>Run locally</summary>
   <p>
