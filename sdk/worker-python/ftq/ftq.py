@@ -14,8 +14,6 @@ transaction = db.transaction()
 # A batch to set a batch of results at once.
 batch = db.batch()
 
-worker_name = 'Default Worker'
-
 
 @firestore.transactional
 def pull_items(transaction, query_ref, queued_ref, result_ref):
@@ -34,11 +32,6 @@ def pull_items(transaction, query_ref, queued_ref, result_ref):
         # add doc to docs
         docs.append(doc)
     return docs
-
-
-def init(name):
-    global worker_name
-    worker_name = name
 
 
 def start(queue, handler, max_batch_size=1):
