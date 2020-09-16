@@ -34,9 +34,9 @@ render...etc) using Firebase.
 
 ## 2. Add items to a processing queue
 
-Items can be added to a processing queue using the [javascript client lib](sdk/client-js)
+Items can be added to a processing queue using the [javascript client lib](sdk/client-js).
 
-[example/client/src/index.js]() contains the client code adding items to the queue
+The example [example/client/src/index.js]() show how to add items to the queue:
 
 ```js
 async function process() {
@@ -59,9 +59,9 @@ To run the example's client:
 
 ## 3. Process the items with local or remote python workers
 
-Items can be pulled and processed from the queue in workers using the [python worker lib](sdl/worker-python)
+Items can be pulled from the queue and processed in workers using the [python worker lib](sdl/worker-python).
 
-[example/worker/main.py]() contains the worker's code that processes incoming items:
+The example [example/worker/main.py]() shows how to processes incoming items:
 
 ```python
 import fstq
