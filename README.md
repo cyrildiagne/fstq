@@ -1,6 +1,6 @@
 # FSTQ
 
-A fast and easy to use task queue for intensive workloads (ML, GPU, video
+A fast and simple task queue for intensive workloads (ML, GPU, video
 render...etc) using Firebase.
 
 - **Transparently mix workers environments:** You can plug-in workers at any
@@ -15,7 +15,7 @@ render...etc) using Firebase.
 
 # Getting Started
 
-## 1. Create and configure a Firebase project
+## 1. Setting up
 
 1. Create a [Firebase]() project
 2. Install and initialize the [Firebase tools](#)
@@ -25,10 +25,16 @@ render...etc) using Firebase.
    firebase init
    ```
 
-3. Setup the Firebase project for FSTQ
+3. Install the fstq CLI and lib
 
    ```sh
-   ./scripts/setup_firebase.sh <firebase-project-id>
+   pip install fstq
+   ```
+
+4. Setup the Firebase project for FSTQ
+
+   ```sh
+   fstq init <firebase-project-id>
    ```
 
 ## 2. Add items to a processing queue
@@ -84,8 +90,7 @@ render...etc) using Firebase.
     - Start the example worker using Docker
 
       ```sh
-      cd example/worker
-      ../../scripts/run_locally.sh . \
+      fstq run example/worker \
           --queue 'fstq-demo' \
           --credentials '/path/to/worker/credentials.json' \
           --max_batch_size 5
@@ -101,8 +106,7 @@ render...etc) using Firebase.
     - Deploy the worker's image and attach a gpu node pool to the queue
 
       ```sh
-      cd example/worker
-      ../../scripts/deploy_gke.sh . \
+      fstq deploy_gke ./example/worker \
           --queue 'fstq-demo' \
           --credentials '/path/to/worker/credentials.json' \
           --max_batch_size 5 \
@@ -115,10 +119,10 @@ render...etc) using Firebase.
 
 ## 4. Monitor
 
-- Track some key metrics:
+- Track some key metrics with the `fstq monitor` command:
 
   ```sh
-  ./scripts/monitor.sh 'fstq-demo'
+  fstq monitor 'fstq-demo'
   ```
 
   Output:
