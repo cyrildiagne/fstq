@@ -4,6 +4,7 @@ creds
 .vscode
 venv
 __pycache__
+*.pyc
 
 # Logs
 logs

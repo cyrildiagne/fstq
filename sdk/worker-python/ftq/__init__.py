@@ -1,1 +1,0 @@
-from ftq.ftq import *

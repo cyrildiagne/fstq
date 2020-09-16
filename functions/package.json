@@ -1,6 +1,6 @@
 {
-  "name": "ftq-push",
-  "description": "Push proxy for FTQ",
+  "name": "fstq-push",
+  "description": "Push proxy for FSTQ",
   "dependencies": {
     "cors": "^2.8.5",
     "firebase-admin": "~8.12.1",

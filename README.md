@@ -1,45 +1,90 @@
-# Firestore Task Queue
+# FSTQ
 
-- **Worker environment agnostic:** You can process the queue with on-premise
-  GPUs and automatically scale-up remote GPU nodes if needed during traffic
-  bursts.
-- **Dynamic batching:** Automatically bulks requests by batches to accelerate
-  processing.
+A fast and easy to use task queue for intensive workloads (ML, GPU, video render...etc)
 
-### 1 - Add items to the queue using the [Javascript Client SDK](#):
+- **Transparently mix workers environments:** You can plug-in workers at any time
+  and from anywhere to help process the queue: For instance you could start with your
+  home computer, add your work's computer at night or even use some GPUs from Colab.
+- **Only processed once:** Guarantee that each item will only be processed once,
+  even if multiple workers are listening to the queue at the same time.
+- **Dynamic batching:** Automatically and dynamically bulk queued items by
+  batches to accelerate processing.
+<!-- - **Managed Autoscaling Workers:** automatically scale-up remote GPU nodes
+  if needed during traffic bursts -->
 
-First initialize the queue with a name and your firebase project client config:
+# Overview
 
-```js
-import ftq from 'firestore-task-queue'
-const queue = ftq.init('my-queue', FIREBASE_CLIENT_CONFIG)
-```
+### 1. Add items to process from a javascript client app
 
-Then add items to the queue:
+- Install the [javascript client lib](#)
 
-```js
-const task = await ftq.push('my-queue', { text: 'hello world' })
-const result = await task.result()
-// Will print: {'text': 'dlrow olleh'}
-```
+  ```sh
+  npm install fstq-client
+  ```
 
-- `queue.push()` returns a `Task` object as soon as the item has been added to
-  the queue (normally takes a few milliseconds).
+- Load and initialize the client lib
 
-- `task.result()` provides an easy way to wait for task completion which can
-  take an undefined amount of time.
+  ```js
+  import fstq from fstq
+  fstq.init(FIREBASE_CONFIG)
+  ```
 
-### 2 - Process queue items using the [Python Worker SDK](#):
+- Add some items to the queue
+  ```js
+  async function process() {
+    const task = await fstq.push('fstq-demo', { text: 'hello world' })
+    const result = await task.result()
+  }
+  for (let i = 0; i < 1000; i++) {
+    process()
+  }
+  ```
 
-```py
-import ftq
+### 2. Process the items with python workers
 
-def reverse(text):
-  return text[::-1]
+- Install the [python admin/worker lib and CLI](#)
 
-def process(items):
-    results = [reverse(item['text']) for item in items]
-    return [{'text': t} for t in results]
+  ```sh
+  pip install fstq
+  ```
 
-ftq.start('my-queue', process)
-```
+- Initialize fstq
+
+  ```sh
+  fstq init
+  ```
+
+- Write a simple worker demo
+
+  ```python
+  import fstq
+  import model
+
+  @fstq.run
+  def process(items):
+      results = [model(item['text']) for item in items]
+      return [{'text': t} for t in results]
+  ```
+
+- Start the worker locally
+
+  ```sh
+  fstq run . \
+    --queue 'fstq-demo' \
+    --max_batch_size 5
+  ```
+
+<!-- - Add a remote autoscaling GPU cluster to help during bursts
+  ```sh
+  fstq deploy . \
+    --queue 'fstq-demo' \
+    --max_batch_size 5 \
+    --min_workers 0 \
+    --max_workers 5 \
+    --gpu nvidia-t4 \
+    --autoscaling economical
+  ``` -->
+
+# Get Started
+
+- [Getting Started](docs/getting-started.md)

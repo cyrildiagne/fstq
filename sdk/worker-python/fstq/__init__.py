@@ -1,0 +1,1 @@
+from fstq.fstq import *

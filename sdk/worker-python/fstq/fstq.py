@@ -1,3 +1,4 @@
+import argparse
 import time
 import firebase_admin
 from firebase_admin import firestore
@@ -34,7 +35,7 @@ def pull_items(transaction, query_ref, queued_ref, result_ref):
     return docs
 
 
-def start(queue, handler, max_batch_size=1):
+def _start(queue, handler, max_batch_size=1):
     # Limit to 250 to respect firestore's num transactions limit of 500
     # combining writes and deletes.
     # https://firebase.google.com/docs/firestore/manage-data/transactions
@@ -88,3 +89,15 @@ def start(queue, handler, max_batch_size=1):
         print()
         pass
     print('Closing...')
+
+
+def run(worker_func):
+    parser = argparse.ArgumentParser(description='FSTQ')
+    parser.add_argument('--queue', help='Name of the queue to listen')
+    parser.add_argument('--max_batch_size',
+                        default=1,
+                        type=int,
+                        help='Max batch size')
+    args = parser.parse_args()
+    # Start the worker
+    _start(args.queue, worker_func, args.max_batch_size)

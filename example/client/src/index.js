@@ -1,12 +1,12 @@
-import ftq from 'ftq'
+import fstq from 'fstq'
 import config from './firebase-config.js'
 
-ftq.init(config)
+fstq.init(config)
 
 async function demo() {
   try {
     // Add item to queue.
-    const task = await ftq.push('my-queue', { text: 'hello world' })
+    const task = await fstq.push('my-queue', { text: 'hello world' })
     console.log(`Task '${task.id}' added. Waiting for completion...`)
 
     // Wait for item to be processed.
@@ -17,6 +17,6 @@ async function demo() {
   }
 }
 
-for (let i = 0; i < 50; i++) {
+for (let i = 0; i < 5; i++) {
   demo()
 }

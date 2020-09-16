@@ -1,4 +1,4 @@
-# FTQ Example
+# FSTQ Example
 
 ## Start a client
 

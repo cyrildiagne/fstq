@@ -4,7 +4,7 @@ import 'firebase/functions'
 
 let app: firebase.app.App
 
-interface FTQ {
+interface FSTQ {
   init: (config: Object) => void
   push: (queueName: string, payload: any) => Promise<Task>
 }
@@ -55,4 +55,4 @@ async function push(queue: string, payload: any): Promise<Task> {
 export default {
   init,
   push,
-} as FTQ
+} as FSTQ

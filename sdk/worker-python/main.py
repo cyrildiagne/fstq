@@ -1,15 +1,18 @@
-import ftq
+"""
+A demo worker.
+
+```
+python main.py \
+    --queue 'my-queue' \
+    --max_batch_size 5
+```
+"""
+import fstq
 
 
-def reverse(text):
-    return text[::-1]
-
-
+@fstq.run
 def process(items):
-    # Reverse the `text` string of each item as an example.
-    results = [reverse(item['text']) for item in items]
-    print(f'Processed {len(results)} items.')
+    # Reverse the `text` string of each item as an example worload.
+    results = [item['text'][::-1] for item in items]
+    print(f'Processed {len(results)} items')
     return [{'text': t} for t in results]
-
-# Start listening for new items in the queue.
-ftq.start('my-queue', process, max_batch_size=5)
