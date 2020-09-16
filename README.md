@@ -84,20 +84,92 @@ render...etc) using Firebase.
       return [{'text': t} for t in results]
   ```
 
-- Start a local worker
+- Generate a `firebase_credentials` json for your worker in
+  [the firebase console](#)
+
+- Start a local worker:
+
+  - Make sure you've installed and setup [Docker](#).
+
+  - Start the example worker using Docker
+    ```sh
+    cd example/worker
+    export GOOGLE_APPLICATION_CREDENTIALS='/path/to/worker/credentials.json'
+    docker build . -t fstq-demo
+    docker run -rm \
+      -v $GOOGLE_APPLICATION_CREDENTIALS:'/credentials.json' \
+      -e GOOGLE_APPLICATION_CREDENTIALS='/credentials.json' \
+      fstq-demo -- \
+          --queue 'fstq-demo' \
+          --max_batch_size 5
+    ```
+
+- Start an autoscaling remote cluster of GPU workers using GKE:
+
+  - Make sure you've installed and setup [gcloud](#).
+
+  - Deploy the worker's image and attach a gpu node pool to the queue
+
+    ```sh
+    ./Scripts . \
+        --queue 'my-queue' \
+        --max_batch_size 5 \
+        --gpu nvidia-t4 \
+        --min_workers 0 \
+        --max_workers 5 \
+        --firebase_credentials '/path/to/worker/credentials.json'
+    ```
+
+## 4. Monitor
+
+- Track your key queue metrics with the `fstq monitor` command:
 
   ```sh
-  export GOOGLE_APPLICATION_CREDENTIALS='/path/to/worker/credentials.json'
+  fstq monitor 'my-queue'
   ```
 
-  ```sh
-  fstq run . \
-    --queue 'fstq-demo' \
-    --max_batch_size 5
+  Output:
+
   ```
+  Queue
+  +----------------------------------------------+
+  | Queued:                      52 items        |
+  |----------------------------------------------|
+  | Processed:                   3045 items      |
+  |----------------------------------------------|
+  | Failed:                      20 items        |
+  | Failed (last hour):          0 items         |
+  |----------------------------------------------|
+  | Filling rate:                3 items/s       |
+  | Processing rate:             2 items/s       |
+  |----------------------------------------------|
+  | Average latency:             2400ms          |
+  +----------------------------------------------+
 
-- Start an autoscaling remote cluster of GPU workers
+  Local Workers:                 1
+  +----------------------------------------------+
+  | Home laptop                                  |
+  |                                              |
+  | Up time:                     22d 6h 32min    |
+  | Status:                      PROCESSING      |
+  | Avg time per item:           3456 ms         |
+  | GPU Memory:                  24% (16.0 Gib)  |
+  |----------------------------------------------|
 
-  ```sh
-  WIP
+  Remote Workers:               2/16
+  |----------------------------------------------|
+  | Remote #1 - Nvidia T4                        |
+  |                                              |
+  | Up time:                     2h 18min        |
+  | Status:                      PROCESSING      |
+  | Avg time per item:           2156 ms         |
+  | GPU Memory:                  24% (16.0 Gib)  |
+  |----------------------------------------------|
+  | Remote #2 - Nvidia T4                        |
+  |                                              |
+  | Up time:                     18min           |
+  | Status:                      PROCESSING      |
+  | Avg time per item:           1956 ms         |
+  | GPU Memory:                  24% (16.0 Gib)  |
+  +----------------------------------------------+
   ```
