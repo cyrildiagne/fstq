@@ -16,6 +16,24 @@ transaction = db.transaction()
 batch = db.batch()
 
 
+class Collections(str, Enum):
+    # Root collection name
+    ROOT = 'fstq'
+    # Queue collection name
+    QUEUED = 'queued'
+    # Results collection name
+    RESULTS = 'results'
+
+
+class Status(str, Enum):
+    # Item is queued waiting to be processed.
+    QUEUED = 'queued'
+    # Item has been processed successfully.
+    COMPLETE = 'complete'
+    # Item processing failed.
+    FAILED = 'failed'
+
+
 @firestore.transactional
 def pull_items(transaction, query_ref, queued_ref, result_ref):
     # Retrieve docs from query
@@ -35,14 +53,14 @@ def pull_items(transaction, query_ref, queued_ref, result_ref):
     return docs
 
 
-def _start(queue, handler, max_batch_size=1):
+def _start(queue, handler, max_batch_size, root_collection_name):
     # Limit to 250 to respect firestore's num transactions limit of 500
     # combining writes and deletes.
     # https://firebase.google.com/docs/firestore/manage-data/transactions
     if max_batch_size > 250:
         raise Exception('max_batch_size must be <= 250')
 
-    queue_col = db.collection(u'queues').document(queue)
+    queue_col = db.collection(root_collection_name).document(queue)
 
     # Create a callback on_snapshot function to capture changes.
     def on_snapshot(docs):
@@ -51,17 +69,19 @@ def _start(queue, handler, max_batch_size=1):
             return
 
         # Process batch.
+        # TODO: Handle failure
         tasks = [doc.to_dict()['payload'] for doc in docs]
         results = handler(tasks)
 
         # Save results.
         for i, result in enumerate(results):
-            r_doc = queue_col.collection('results').document(docs[i].id)
+            r_doc = queue_col.collection(Collections.RESULTS).document(
+                docs[i].id)
             batch.update(
                 r_doc, {
                     'task': tasks[i],
                     'result': result,
-                    'status': 'complete',
+                    'status': Status.COMPLETE,
                     'dateComplete': firestore.SERVER_TIMESTAMP
                 })
         # Commit updates.
@@ -70,11 +90,11 @@ def _start(queue, handler, max_batch_size=1):
     print(f'Listening for new tasks in queue: {queue}'
           f' (max_batch_size: {max_batch_size})')
 
-    query_ref = queue_col.collection('queued').order_by(
+    query_ref = queue_col.collection(Collections.QUEUED).order_by(
         'dateAdded', direction=firestore.Query.ASCENDING).limit(max_batch_size)
 
-    queued_ref = queue_col.collection('queued')
-    result_ref = queue_col.collection('results')
+    queued_ref = queue_col.collection(Collections.QUEUED)
+    result_ref = queue_col.collection(Collections.RESULTS)
 
     try:
         while True:
@@ -83,7 +103,7 @@ def _start(queue, handler, max_batch_size=1):
             docs = pull_items(transaction, query_ref, queued_ref, result_ref)
             if len(docs):
                 on_snapshot(docs)
-            # TODO: inform that worker is still alive periodically.
+            # TODO: Inform that worker is still alive periodically.
             time.sleep(1)
     except KeyboardInterrupt:
         print()
@@ -98,6 +118,12 @@ def run(worker_func):
                         default=1,
                         type=int,
                         help='Max batch size')
+    parser.add_argument('--root_collection_name',
+                        default=Collections.ROOT,
+                        help='Root collection name')
     args = parser.parse_args()
     # Start the worker
-    _start(args.queue, worker_func, args.max_batch_size)
+    _start(args.queue,
+           worker_func,
+           args.max_batch_size,
+           root_collection_name=root_collection_name)

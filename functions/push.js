@@ -11,25 +11,48 @@ const cors = require('cors')({ origin: true })
 const admin = require('firebase-admin')
 admin.initializeApp()
 
+// Collections names
+const Collections = {
+  // Root collection name
+  ROOT: 'fstq',
+  // Queue collection name
+  QUEUED: 'queued',
+  // Results collection name
+  RESULTS: 'results',
+}
+
+// Possible item processing statuses
+const Status = {
+  // Item is queued waiting to be processed.
+  QUEUED: 'queued',
+  // Item has been processed successfully.
+  COMPLETE: 'complete',
+  // Item processing failed.
+  FAILED: 'failed',
+}
+
 // Push HTTP Endpoint.
 exports.push = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
     try {
       // Grab the payload.
       const { payload, queue } = JSON.parse(req.body.data)
-      const queueDoc = admin.firestore().collection('queues').doc(queue)
+      const queueDoc = admin.firestore().collection(Collections.ROOT).doc(queue)
       // Add empty result for the client to listen to.
-      const doc = await queueDoc.collection('results').add({
-        status: 'queued',
+      const resultItemDoc = await queueDoc.collection(Collections.RESULTS).add({
+        status: Status.QUEUED,
         dateAdded: admin.firestore.FieldValue.serverTimestamp(),
       })
       // Push queue item with payload.
-      await queueDoc.collection('queued').doc(doc.id).set({
+      const queuedItemDoc = queueDoc
+        .collection(Collections.QUEUED)
+        .doc(resultItemDoc.id)
+      await queuedItemDoc.set({
         payload,
         dateAdded: admin.firestore.FieldValue.serverTimestamp(),
       })
       // Send back a message that we've succesfully written the message
-      res.json({ data: { id: doc.id, status: 'queued' } })
+      res.json({ data: { id: resultItemDoc.id, status: Status.QUEUED } })
     } catch (e) {
       console.log(e)
       res.status(500).json({ error: e })

@@ -4,6 +4,31 @@ import 'firebase/functions'
 
 let app: firebase.app.App
 
+// Collections names
+enum Collections {
+  // Root collection name
+  ROOT = 'fstq',
+  // Queue collection name
+  QUEUED = 'queued',
+  // Results collection name
+  RESULTS = 'results',
+}
+
+// Possible item processing statuses
+enum Status {
+  // Item is queued waiting to be processed.
+  QUEUED = 'queued',
+  // Item has been processed successfully.
+  COMPLETE = 'complete',
+  // Item processing failed.
+  FAILED = 'failed',
+}
+
+// The Firebae functions.
+enum API {
+  Push = 'push',
+}
+
 interface FSTQ {
   init: (config: Object) => void
   push: (queueName: string, payload: any) => Promise<Task>
@@ -24,7 +49,7 @@ async function init(config: any) {
 
 async function push(queue: string, payload: any): Promise<Task> {
   // Push payload to queue using proxy.
-  const pushFn = firebase.functions().httpsCallable('push')
+  const pushFn = firebase.functions().httpsCallable(API.Push)
   try {
     const resp = await pushFn(JSON.stringify({ queue, payload }))
     const { id, status } = resp.data
@@ -33,15 +58,21 @@ async function push(queue: string, payload: any): Promise<Task> {
     const prom = new Promise((resolve, reject) => {
       const doc = firebase
         .firestore()
-        .collection('queues')
+        .collection(Collections.ROOT)
         .doc(queue)
-        .collection('results')
+        .collection(Collections.RESULTS)
         .doc(id)
       const unsub = doc.onSnapshot(snap => {
         const result = snap.data()
-        if (result.status === 'complete') {
-          resolve(result)
-          unsub()
+        switch (result.status) {
+          case Status.COMPLETE:
+            resolve(result)
+            unsub()
+            break
+          case Status.FAILED:
+            reject()
+            unsub()
+            break
         }
       })
     })
