@@ -33,92 +33,92 @@ render...etc) using Firebase.
 
 ## 2. Add items to a processing queue
 
-Items can be added to a processing queue using the [javascript client lib](sdk/client-js).
+- Items can be added to a processing queue using the [javascript client lib](sdk/client-js).
 
-The example client [example/client/src/index.js]() shows how to add items to a queue we want to call `fstq-demo`:
+  The example client [example/client/src/index.js]() shows how to add items to a queue we want to call `fstq-demo`:
 
-```js
-async function process() {
-  const task = await fstq.push('fstq-demo', { text: 'hello world' })
-  const result = await task.result()
-  console.log(result)
-}
-for (let i = 0; i < 1000; i++) {
-  process()
-}
-```
+  ```js
+  async function process() {
+    const task = await fstq.push('fstq-demo', { text: 'hello world' })
+    const result = await task.result()
+    console.log(result)
+  }
+  for (let i = 0; i < 1000; i++) {
+    process()
+  }
+  ```
 
-To run the example client:
+  To run the example client:
 
-- `cd example/client`
-- Create a file `src/firebase-config.js` that exports your [firebase's web config]().
-- Run `yarn install`
-- Run `yarn run dev`
-- Navigate to [http://localhost:8080](http://localhost:8080)
+  - `cd example/client`
+  - Create a file `src/firebase-config.js` that exports your [firebase's web config]().
+  - Run `yarn install`
+  - Run `yarn run dev`
+  - Navigate to [http://localhost:8080](http://localhost:8080)
 
 ## 3. Process the items with local or remote python workers
 
-Items can be pulled from the queue and processed using the [python worker lib](sdl/worker-python).
+- Items can be pulled from the queue and processed using the [python worker lib](sdl/worker-python).
 
-The example worker [example/worker/main.py]() shows how to processes incoming items:
+  The example worker [example/worker/main.py]() shows how to processes incoming items:
 
-```python
-import fstq
-import model
+  ```python
+  import fstq
+  import model
 
-@fstq.run
-def process(items):
-    results = [model(item['text']) for item in items]
-    return [{'text': t} for t in results]
-```
+  @fstq.run
+  def process(items):
+      results = [model(item['text']) for item in items]
+      return [{'text': t} for t in results]
+  ```
 
-To run the example worker:
+  To run the example worker:
 
-- Generate a credentials json file for your worker in [the firebase console](#)
+  - Generate a credentials json file for your worker in [the firebase console](#)
 
-- <details><summary>Run locally</summary>
-  <p>
+  - <details><summary>Run locally</summary>
+    <p>
 
-  - Make sure you've installed and setup [Docker](#).
+    - Make sure you've installed and setup [Docker](#).
 
-  - Start the example worker using Docker
+    - Start the example worker using Docker
 
-    ```sh
-    cd example/worker
-    ../../scripts/run_locally.sh . \
-        --queue 'fstq-demo' \
-        --credentials '/path/to/worker/credentials.json' \
-        --max_batch_size 5
-    ```
+      ```sh
+      cd example/worker
+      ../../scripts/run_locally.sh . \
+          --queue 'fstq-demo' \
+          --credentials '/path/to/worker/credentials.json' \
+          --max_batch_size 5
+      ```
 
-    </p>
+      </p>
 
-- <details><summary>Run in an autoscaling remote GPU cluster using GKE</summary>
-  <p>
+  - <details><summary>Run in an autoscaling remote GPU cluster using GKE</summary>
+    <p>
 
-  - Make sure you've installed and setup [gcloud](#).
+    - Make sure you've installed and setup [gcloud](#).
 
-  - Deploy the worker's image and attach a gpu node pool to the queue
+    - Deploy the worker's image and attach a gpu node pool to the queue
 
-    ```sh
-    cd example/worker
-    ../../scripts/deploy_gke.sh . \
-        --queue 'fstq-demo' \
-        --credentials '/path/to/worker/credentials.json' \
-        --max_batch_size 5 \
-        --gpu nvidia-t4 \
-        --min_workers 0 \
-        --max_workers 5
-    ```
+      ```sh
+      cd example/worker
+      ../../scripts/deploy_gke.sh . \
+          --queue 'fstq-demo' \
+          --credentials '/path/to/worker/credentials.json' \
+          --max_batch_size 5 \
+          --gpu nvidia-t4 \
+          --min_workers 0 \
+          --max_workers 5
+      ```
 
-    </p>
+      </p>
 
 ## 4. Monitor
 
-- Track some key metrics with the `fstq monitor` command:
+- Track some key metrics:
 
   ```sh
-  fstq monitor 'fstq-demo'
+  ./scripts/monitor.sh 'fstq-demo'
   ```
 
   Output:
