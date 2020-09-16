@@ -43,7 +43,7 @@ render...etc) using Firebase.
 - Items can be added to a processing queue using the [javascript client lib](sdk/client-js).
 
   The example client [example/client/src/index.js]() shows how to add items
-  to a queue called`fstq-demo` (the queue is created after with the first item added):
+  to a queue called `fstq-demo` (the queue is created when the first item added):
 
   ```js
   async function process() {
@@ -51,7 +51,7 @@ render...etc) using Firebase.
     const result = await task.result()
     console.log(result)
   }
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 10; i++) {
     process()
   }
   ```
@@ -68,15 +68,15 @@ render...etc) using Firebase.
 
 - Items can be pulled from the queue and processed using the [python worker lib](sdl/worker-python).
 
-  The example worker [example/worker/main.py]() shows how to processes incoming items:
+  The example worker [example/worker/main.py]() shows how to process incoming items:
 
   ```python
   import fstq
   import model
 
   @fstq.run
-  def process(items):
-      results = [model(item['text']) for item in items]
+  def process(batch):
+      results = [model(item['text']) for item in batch]
       return [{'text': t} for t in results]
   ```
 
@@ -142,7 +142,7 @@ render...etc) using Firebase.
   | Average latency:             2400 ms         |
   +----------------------------------------------+
 
-  Local Workers:                 1
+  Local Workers:                        Total: 1
   +----------------------------------------------+
   | Home laptop                                  |
   |                                              |
@@ -152,7 +152,7 @@ render...etc) using Firebase.
   | GPU Memory:                  24% (16.0 Gib)  |
   |----------------------------------------------|
 
-  Remote Workers:               2/16
+  Remote Workers:                    Total: 2/16
   |----------------------------------------------|
   | Remote #1 - Nvidia T4                        |
   |                                              |
