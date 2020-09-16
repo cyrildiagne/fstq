@@ -29,7 +29,7 @@ render...etc) using Firebase.
 3. Setup the Firebase project for FSTQ
 
    ```sh
-   ./scripts/setup_firebase.sh
+   ./cli/setup_firebase.sh <firebase-project-id>
    ```
 
 ## 2. Add items to a processing queue
@@ -49,7 +49,7 @@ for (let i = 0; i < 1000; i++) {
 }
 ```
 
-To run the example's client:
+To run the example client:
 
 - `cd example/client`
 - Create a file `src/firebase-config.js` that exports your [firebase's web config]().
@@ -59,7 +59,7 @@ To run the example's client:
 
 ## 3. Process the items with local or remote python workers
 
-Items can be pulled from the queue and processed in workers using the [python worker lib](sdl/worker-python).
+Items can be pulled from the queue and processed using the [python worker lib](sdl/worker-python).
 
 The example [example/worker/main.py]() shows how to processes incoming items:
 
@@ -73,7 +73,7 @@ def process(items):
     return [{'text': t} for t in results]
 ```
 
-To run example's worker:
+To run the example worker:
 
 - Generate a `firebase_credentials` json for your worker in
   [the firebase console](#)
@@ -87,7 +87,7 @@ To run example's worker:
 
     ```sh
     cd example/worker
-    ../../scripts/run_locally.sh . \
+    ../../cli/run_locally.sh . \
         --queue 'fstq-demo' \
         --credentials '/path/to/worker/credentials.json' \
         --max_batch_size 5
@@ -104,7 +104,7 @@ To run example's worker:
 
     ```sh
     cd example/worker
-    ../../scripts/deploy_gke.sh . \
+    ../../cli/deploy_gke.sh . \
         --queue 'fstq-demo' \
         --credentials '/path/to/worker/credentials.json' \
         --max_batch_size 5 \
@@ -135,7 +135,7 @@ To run example's worker:
   |----------------------------------------------|
   | Incoming rate:               3 items/s       |
   | Processing rate:             2 items/s       |
-  | Average latency:             2400 ms          |
+  | Average latency:             2400 ms         |
   +----------------------------------------------+
 
   Local Workers:                 1
