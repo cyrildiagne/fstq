@@ -37,74 +37,75 @@ render...etc) using Firebase.
    ./scripts/setup_firebase.sh
    ```
 
-## 2. Add items to the queue from a javascript client app
+## 2. Add items to the queue
 
-- Install the [javascript client lib](#)
+Items can be added to the queue using the [javascript client lib](sdk/client-js)
 
-  ```sh
-  npm install fstq-client
-  ```
+[example/client/src/index.js]() contains the client code adding items to the queue
 
-- Load and initialize the client lib
+```js
+async function process() {
+  const task = await fstq.push('fstq-demo', { text: 'hello world' })
+  const result = await task.result()
+  console.log(result)
+}
+for (let i = 0; i < 1000; i++) {
+  process()
+}
+```
 
-  ```js
-  import fstq from fstq
-  fstq.init(FIREBASE_CONFIG)
-  ```
+To run the example's client:
 
-- Add some items to the queue
-  ```js
-  async function process() {
-    const task = await fstq.push('fstq-demo', { text: 'hello world' })
-    const result = await task.result()
-    console.log(result)
-  }
-  for (let i = 0; i < 1000; i++) {
-    process()
-  }
-  ```
+- `cd example/client`
+- Create a file `src/firebase-config.js` that exports your firebase config.
+- Run `yarn install`
+- Run `yarn run dev`
+- Navigate to [http://localhost:8080](http://localhost:8080)
 
 ## 3. Process the items with local or remote python workers
 
-- Install the [python admin/worker lib and CLI](#)
+Items can be pulled and processed from the queue in workers using the [python worker lib](sdl/worker-python)
 
-  ```sh
-  pip install fstq
-  ```
+[example/worker/main.py]() contains the worker's code that processes incoming items:
 
-- Write a simple worker demo
+```python
+import fstq
+import model
 
-  ```python
-  import fstq
-  import model
+@fstq.run
+def process(items):
+    results = [model(item['text']) for item in items]
+    return [{'text': t} for t in results]
+```
 
-  @fstq.run
-  def process(items):
-      results = [model(item['text']) for item in items]
-      return [{'text': t} for t in results]
-  ```
+To run example's worker:
 
 - Generate a `firebase_credentials` json for your worker in
   [the firebase console](#)
 
-- Start a local worker:
+- <details><summary>Start a worker locally</summary>
+  <p>
 
   - Make sure you've installed and setup [Docker](#).
 
   - Start the example worker using Docker
-    ```sh
-    cd example/worker
-    export GOOGLE_APPLICATION_CREDENTIALS='/path/to/worker/credentials.json'
-    docker build . -t fstq-demo
-    docker run -rm \
-      -v $GOOGLE_APPLICATION_CREDENTIALS:'/credentials.json' \
-      -e GOOGLE_APPLICATION_CREDENTIALS='/credentials.json' \
-      fstq-demo -- \
-          --queue 'fstq-demo' \
-          --max_batch_size 5
-    ```
 
-- Start an autoscaling remote cluster of GPU workers using GKE:
+        ```sh
+        cd example/worker
+        export GOOGLE_APPLICATION_CREDENTIALS='/path/to/worker/credentials.json'
+        docker build . -t fstq-demo
+        docker run -rm \
+          -v $GOOGLE_APPLICATION_CREDENTIALS:'/credentials.json' \
+          -e GOOGLE_APPLICATION_CREDENTIALS='/credentials.json' \
+          fstq-demo -- \
+              --queue 'fstq-demo' \
+              --max_batch_size 5
+        ```
+
+    </p>
+
+- <details><summary>Start an autoscaling remote cluster of GPU workers using GKE</summary>
+  <p>
 
   - Make sure you've installed and setup [gcloud](#).
 
@@ -120,6 +121,8 @@ render...etc) using Firebase.
         --max_workers 5 \
         --credentials '/path/to/worker/credentials.json'
     ```
+
+    </p>
 
 ## 4. Monitor
 
@@ -141,7 +144,7 @@ render...etc) using Firebase.
   | Failed:                      20 items        |
   | Failed (last hour):          0 items         |
   |----------------------------------------------|
-  | Filling rate:                3 items/s       |
+  | Incoming rate:               3 items/s       |
   | Processing rate:             2 items/s       |
   |----------------------------------------------|
   | Average latency:             2400ms          |
