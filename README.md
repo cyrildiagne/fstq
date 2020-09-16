@@ -112,7 +112,7 @@ render...etc) using Firebase.
 
     ```sh
     ./scripts/deploy_gke.sh . \
-        --queue 'my-queue' \
+        --queue 'fstq-demo' \
         --max_batch_size 5 \
         --gpu nvidia-t4 \
         --min_workers 0 \
@@ -125,7 +125,7 @@ render...etc) using Firebase.
 - Track your key queue metrics with the `fstq monitor` command:
 
   ```sh
-  fstq monitor 'my-queue'
+  fstq monitor 'fstq-demo'
   ```
 
   Output:
