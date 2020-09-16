@@ -18,7 +18,6 @@ async function init(config: any) {
   app = firebase.initializeApp(config)
   // Use the local functions in dev environment.
   if (process.env.NODE_ENV === 'development') {
-    console.log('using dev functions')
     app.functions().useFunctionsEmulator('http://localhost:5001')
   }
 }
@@ -39,7 +38,6 @@ async function push(queue: string, payload: any): Promise<Task> {
         .collection('results')
         .doc(id)
       const unsub = doc.onSnapshot(snap => {
-        console.log(snap.data())
         const result = snap.data()
         if (result.status === 'complete') {
           resolve(result)

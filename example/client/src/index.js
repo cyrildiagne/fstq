@@ -17,4 +17,6 @@ async function demo() {
   }
 }
 
-demo()
+for (let i = 0; i < 50; i++) {
+  demo()
+}

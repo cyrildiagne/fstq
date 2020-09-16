@@ -3,6 +3,8 @@
 - **Worker environment agnostic:** You can process the queue with on-premise
   GPUs and automatically scale-up remote GPU nodes if needed during traffic
   bursts.
+- **Dynamic batching:** Automatically bulks requests by batches to accelerate
+  processing.
 
 ### 1 - Add items to the queue using the [Javascript Client SDK](#):
 

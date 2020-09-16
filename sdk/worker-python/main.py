@@ -11,6 +11,8 @@ def process(items):
     print(f'Processed {len(results)} items.')
     return [{'text': t} for t in results]
 
+# Initialize the worker.
+ftq.init('my-worker-name')
 
 # Start listening for new items in the queue.
-ftq.start('my-queue', process)
+ftq.start('my-queue', process, max_batch_size=5)

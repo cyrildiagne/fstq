@@ -4,6 +4,7 @@
 // triggers.
 const functions = require('firebase-functions')
 
+// Enable CORS.
 const cors = require('cors')({ origin: true })
 
 // The Firebase Admin SDK to access Cloud Firestore.
