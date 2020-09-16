@@ -111,13 +111,13 @@ render...etc) using Firebase.
   - Deploy the worker's image and attach a gpu node pool to the queue
 
     ```sh
-    ./Scripts . \
+    ./scripts/deploy_gke.sh . \
         --queue 'my-queue' \
         --max_batch_size 5 \
         --gpu nvidia-t4 \
         --min_workers 0 \
         --max_workers 5 \
-        --firebase_credentials '/path/to/worker/credentials.json'
+        --credentials '/path/to/worker/credentials.json'
     ```
 
 ## 4. Monitor
