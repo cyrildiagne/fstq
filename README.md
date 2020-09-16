@@ -29,7 +29,7 @@ render...etc) using Firebase.
 3. Setup the Firebase project for FSTQ
 
    ```sh
-   ./cli/setup_firebase.sh <firebase-project-id>
+   ./scripts/setup_firebase.sh <firebase-project-id>
    ```
 
 ## 2. Add items to a processing queue
@@ -87,7 +87,7 @@ To run the example worker:
 
     ```sh
     cd example/worker
-    ../../cli/run_locally.sh . \
+    ../../scripts/run_locally.sh . \
         --queue 'fstq-demo' \
         --credentials '/path/to/worker/credentials.json' \
         --max_batch_size 5
@@ -104,7 +104,7 @@ To run the example worker:
 
     ```sh
     cd example/worker
-    ../../cli/deploy_gke.sh . \
+    ../../scripts/deploy_gke.sh . \
         --queue 'fstq-demo' \
         --credentials '/path/to/worker/credentials.json' \
         --max_batch_size 5 \
