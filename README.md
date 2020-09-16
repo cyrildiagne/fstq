@@ -111,7 +111,8 @@ render...etc) using Firebase.
   - Deploy the worker's image and attach a gpu node pool to the queue
 
     ```sh
-    ./scripts/deploy_gke.sh . \
+    cd example/worker
+    ../../scripts/deploy_gke.sh . \
         --queue 'fstq-demo' \
         --max_batch_size 5 \
         --gpu nvidia-t4 \
@@ -122,7 +123,7 @@ render...etc) using Firebase.
 
 ## 4. Monitor
 
-- Track your key queue metrics with the `fstq monitor` command:
+- Track some key metrics with the `fstq monitor` command:
 
   ```sh
   fstq monitor 'fstq-demo'
