@@ -7,7 +7,7 @@ render...etc) using Firebase.
   time and from anywhere to help process the queue: For instance you could start
   processing the queue with your home computer, add your work's computer at
   night and even add some GPUs from Colab during traffic bursts.
-- **Autoscale remote GPU Workers:** You can also in parallel automatically scale up a cluster of remote GPUs in Kubernetes based on the rate of items added/processed.
+- **Autoscale remote GPU Workers:** You can also automatically scale a cluster of remote GPUs in Kubernetes based on the rate of items added/processed.
 - **Dynamic batching:** Automatically and dynamically bulk items by batches
   to accelerate processing.
 - **Only process once:** Guarantee that each item will only be processed once,
@@ -77,7 +77,7 @@ To run the example worker:
 - Generate a `firebase_credentials` json for your worker in
   [the firebase console](#)
 
-- <details><summary>Start a new worker locally</summary>
+- <details><summary>Run locally</summary>
   <p>
 
   - Make sure you've installed and setup [Docker](#).
@@ -94,7 +94,7 @@ To run the example worker:
 
     </p>
 
-- <details><summary>Start an autoscaling remote cluster of GPU workers using GKE</summary>
+- <details><summary>Run in an autoscaling remote GPU cluster using GKE</summary>
   <p>
 
   - Make sure you've installed and setup [gcloud](#).
