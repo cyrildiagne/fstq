@@ -3,12 +3,12 @@
 A fast and simple task queue for intensive workloads (ML, GPU, video
 render...etc) using Firebase.
 
-- **Transparently mix workers environments:** You can plug-in workers at any
+- **Transparently mix workers environments:** You can plug-in new workers at any
   time and from anywhere to help process the queue: For instance you could start
-  processing the queue with your home computer, add your work's computer at
-  night and even add some GPUs from Colab during traffic bursts.
-- **Autoscale remote GPU Workers:** You can also add a cluster of remote GPUs in
-  Kubernetes that will automatically scale with rate of items added/processed.
+  processing the queue with your home computer, then add your work's computer at
+  night and even use some GPUs from Colab during traffic bursts.
+- **Autoscale remote GPU Workers:** You can also easily add a cluster of remote
+  GPUs that will automatically scale with the rate of items added/processed.
 - **Dynamic batching:** Automatically and dynamically bulk items in batches
   to accelerate processing.
 - **Only process once:** Guarantee that each item will only be processed once,
