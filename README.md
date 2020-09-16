@@ -36,7 +36,7 @@ render...etc) using Firebase.
 
 Items can be added to a processing queue using the [javascript client lib](sdk/client-js).
 
-The example [example/client/src/index.js]() show how to add items to the queue:
+The example [example/client/src/index.js]() shows how to add items to the queue:
 
 ```js
 async function process() {
@@ -78,7 +78,7 @@ To run example's worker:
 - Generate a `firebase_credentials` json for your worker in
   [the firebase console](#)
 
-- <details><summary>Start a worker locally</summary>
+- <details><summary>Start a new worker locally</summary>
   <p>
 
   - Make sure you've installed and setup [Docker](#).
@@ -129,16 +129,13 @@ To run example's worker:
   Queue
   +----------------------------------------------+
   | Queued:                      52 items        |
-  |----------------------------------------------|
   | Processed:                   3045 items      |
-  |----------------------------------------------|
   | Failed:                      20 items        |
   | Failed (last hour):          0 items         |
   |----------------------------------------------|
   | Incoming rate:               3 items/s       |
   | Processing rate:             2 items/s       |
-  |----------------------------------------------|
-  | Average latency:             2400ms          |
+  | Average latency:             2400 ms          |
   +----------------------------------------------+
 
   Local Workers:                 1
