@@ -32,9 +32,9 @@ render...etc) using Firebase.
    ./scripts/setup_firebase.sh
    ```
 
-## 2. Add items to the queue
+## 2. Add items to a processing queue
 
-Items can be added to the queue using the [javascript client lib](sdk/client-js)
+Items can be added to a processing queue using the [javascript client lib](sdk/client-js)
 
 [example/client/src/index.js]() contains the client code adding items to the queue
 
