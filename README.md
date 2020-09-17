@@ -1,7 +1,6 @@
 # FSTQ
 
-A fast and simple task queue for intensive workloads (ML, GPU, video
-rendering...etc) using Firebase.
+A fast and simple task queue with Firebase.
 
 <!-- - **Ideal for intensive GPU inference**
 
@@ -38,14 +37,13 @@ rendering...etc) using Firebase.
   FSTQ guarantees that each item will only be processed
   once even if multiple workers are listening to the queue at the same time. -->
 
-## 1. Setting up
+## 1. Setting up FSTQ
 
 1. Create a [Firebase]() project
 2. Install and initialize the [Firebase tools](#)
 
    ```
-   npm install -g firebase-tools
-   firebase init
+   npm install -g firebase-tools && firebase init
    ```
 
 3. Install the fstq CLI
@@ -54,18 +52,19 @@ rendering...etc) using Firebase.
    pip install fstq
    ```
 
-4. Initialize the Firebase project for FSTQ
+## 1. Create a queue
 
-   ```sh
-   fstq init <firebase-project-id>
-   ```
+- Simply run
+  ```sh
+  fstq create 'fstq-demo' --project 'your-firebase-project-id'
+  ```
 
-## 2. Add items to a processing queue
+## 2. Add items to the queue
 
-- Items can be added to a processing queue using the [javascript client lib](lib/client-js).
+- Items can be added to the queue using the [javascript client lib](lib/client-js).
 
-  The example client [example/client/src/index.js]() shows how to add items
-  to a new `fstq-demo` queue (the queue is created when the first item added):
+  The [client example](example/client/src/index.js) shows to add items
+  to the queue and wait for the results:
 
   ```js
   import fstq from 'fstq'
@@ -74,7 +73,8 @@ rendering...etc) using Firebase.
   fstq.init(config)
 
   async function process() {
-    const task = await fstq.push('fstq-demo', { text: 'hello world' })
+    const item = { text: 'hello world' }
+    const task = await fstq.push('fstq-demo', item)
     const result = await task.result()
     console.log(result)
   }
@@ -83,9 +83,11 @@ rendering...etc) using Firebase.
   }
   ```
 
-  To run the example client:
+  <details><summary><b>Instructions to run the client example</b></summary>
+  <p>
 
-  - Create a file `example/client/src/firebase-config.js` that exports your [firebase's web config]() such as:
+  - Create a file `example/client/src/firebase-config.js` that exports your
+    [firebase's web config]() such as:
 
     ```js
     export default {
@@ -102,14 +104,16 @@ rendering...etc) using Firebase.
     yarn run dev
     ```
   - Navigate to [http://localhost:8080](http://localhost:8080)
-  - It will add the items to the queue, and wait until the items are
-    processed to print the result in the console.
+  - The items will be added to the queue and the results will be printed in the
+    console as soon as they're available.
 
-## 3. Process the items with python workers
+  </p></details>
+
+## 3. Process the queue
 
 - Items can be pulled from the queue and processed using the [python worker lib](sdl/worker-python).
 
-  The example worker [example/worker/main.py]() shows how to process incoming items:
+  The [worker example](example/worker/main.py) shows how to process incoming items:
 
   ```python
   import fstq
@@ -123,58 +127,67 @@ rendering...etc) using Firebase.
       return [{'text': t} for t in results]
   ```
 
-  To run the example worker:
+  <details><summary>Instructions to run the worker example</summary>
+  <p>
 
   - First, generate a credentials json file for your worker in [the firebase console](#)
-  - Then you can run the code (either or both):
+  - Then you can run the worker:
 
-    <details><summary>Locally with python</summary>
-    <p>
+      <details><summary>Locally with python</summary>
+      <p>
 
-    - Make sure you've installed the requirements (preferably in a virtualenv).
+      - Install the requirements (preferably in a [virtualenv]()).
 
-    - Start the example worker
+        ```sh
+        virtualenv venv
+        source venv/bin/activate
+        pip install -r example/worker/requirements.txt
+        ```
 
-      ```sh
-      python example/worker/main.py \
-          --queue 'fstq-demo' \
-          --max_batch_size 5
-      ```
+      - Start the example worker
 
-    </p></details>
+        ```sh
+        python example/worker/main.py \
+            --queue 'fstq-demo' \
+            --max_batch_size 5
+        ```
 
-    <details><summary>Locally as Docker container</summary>
-    <p>
+      </p></details>
 
-    - Make sure you've installed and setup [Docker](#).
+      <details><summary>Locally as Docker container</summary>
+      <p>
 
-    - Start the example worker using Docker
+      - Make sure you've installed and setup [Docker](#).
 
-      ```sh
-      fstq run example/worker \
-          --queue 'fstq-demo' \
-          --credentials '/path/to/worker/credentials.json' \
-          --max_batch_size 5
-      ```
+      - Start the example worker using Docker
 
-    </p></details>
+        ```sh
+        fstq run example/worker \
+            --queue 'fstq-demo' \
+            --credentials '/path/to/worker/credentials.json' \
+            --max_batch_size 5
+        ```
 
-    <details><summary>Remotely in a cluster of GPU</summary>
-    <p>
+      </p></details>
 
-    - Make sure you've installed and setup [gcloud](#).
+      <details><summary>Remotely in a cluster of GPU</summary>
+      <p>
 
-    - Deploy the worker's image and attach a gpu node pool to the queue
+      - Make sure you've installed and setup [gcloud](#).
 
-      ```sh
-      fstq deploy ./example/worker \
-          --queue 'fstq-demo' \
-          --credentials '/path/to/worker/credentials.json' \
-          --max_batch_size 5 \
-          --gpu nvidia-t4 \
-          --min_workers 0 \
-          --max_workers 5
-      ```
+      - Deploy the worker's image and attach a gpu node pool to the queue
+
+        ```sh
+        fstq deploy ./example/worker \
+            --queue 'fstq-demo' \
+            --credentials '/path/to/worker/credentials.json' \
+            --max_batch_size 5 \
+            --gpu nvidia-t4 \
+            --min_workers 0 \
+            --max_workers 5
+        ```
+
+        </p></details>
 
     </p></details>
 

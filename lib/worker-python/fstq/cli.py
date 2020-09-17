@@ -1,8 +1,9 @@
-def init(project_id: str):
-    """Initialize the firebase project."""
+def create(queue_name: str, project_id: str):
+    """Creates a new queue."""
     #TODO: Make sure Firestore is enabled
     #TODO: Create the security rules
     #TODO: Deploy the Functions
+    #TODO: Create empty doc
     return
 
 def run():
