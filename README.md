@@ -208,7 +208,8 @@ rendering...etc) using Firebase.
   │ Status:                      PROCESSING      │
   │ Up time:                     22d 6h 32min    │
   │ Avg time per item:           3456 ms         │
-  │ GPU Mem:                     87% (8.0 Gib)   │
+  │ CPU:                         63% (2 CPU)     │
+  │ Mem:                         72% (8.0 Gb)    │
   └──────────────────────────────────────────────┘
 
    GKE Workers                      Total: 3 / 16
