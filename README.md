@@ -103,7 +103,7 @@ rendering...etc) using Firebase.
     ```
   - Navigate to [http://localhost:8080](http://localhost:8080)
   - It will add the items to the queue, and wait until the items are
-    processed to print the result.
+    processed to print the result in the console.
 
 ## 3. Process the items with python workers
 
@@ -189,7 +189,7 @@ rendering...etc) using Firebase.
   Output:
 
   ```
-  Queue
+  Queue:                         fstq-demo
   +----------------------------------------------+
   | Queued:                      52 items        |
   | Processed:                   3045 items      |
@@ -201,27 +201,27 @@ rendering...etc) using Firebase.
   | Average latency:             2400 ms         |
   +----------------------------------------------+
 
-  Local Workers:                        Total: 1
+  Local Workers                  Total: 1
   +----------------------------------------------+
   | Home laptop                                  |
-  |                                              |
+  |----------------------------------------------|
   | Up time:                     22d 6h 32min    |
   | Status:                      PROCESSING      |
   | Avg time per item:           3456 ms         |
   | GPU Memory:                  24% (16.0 Gib)  |
-  |----------------------------------------------|
+  +----------------------------------------------+
 
-  Remote Workers:                    Total: 2/16
+  GKE Workers                    Total: 2/16
+  +----------------------------------------------+
+  | GKE #1 - Nvidia T4                           |
   |----------------------------------------------|
-  | Remote #1 - Nvidia T4                        |
-  |                                              |
   | Up time:                     2h 18min        |
   | Status:                      PROCESSING      |
   | Avg time per item:           2156 ms         |
   | GPU Memory:                  24% (16.0 Gib)  |
   |----------------------------------------------|
-  | Remote #2 - Nvidia T4                        |
-  |                                              |
+  | GKE #2 - Nvidia T4                           |
+  |----------------------------------------------|
   | Up time:                     18min           |
   | Status:                      PROCESSING      |
   | Avg time per item:           1956 ms         |
