@@ -190,41 +190,41 @@ rendering...etc) using Firebase.
 
   ```
   Queue:                         fstq-demo
-  +----------------------------------------------+
-  | Queued:                      52 items        |
-  | Processed:                   3045 items      |
-  | Failed:                      20 items        |
-  | Failed (last hour):          0 items         |
-  |----------------------------------------------|
-  | Incoming rate:               3 items/s       |
-  | Processing rate:             2 items/s       |
-  | Average latency:             2400 ms         |
-  +----------------------------------------------+
+  ┌──────────────────────────────────────────────┐
+  │ Queued:                      52 items        │
+  │ Processed:                   3045 items      │
+  │ Failed:                      20 items        │
+  │ Failed (last hour):          0 items         │
+  ├──────────────────────────────────────────────┤
+  │ Incoming rate:               3 items/s       │
+  │ Processing rate:             2 items/s       │
+  │ Average latency:             2400 ms         │
+  └──────────────────────────────────────────────┘
 
   Local Workers                  Total: 1
-  +----------------------------------------------+
-  | Home laptop                                  |
-  |----------------------------------------------|
-  | Up time:                     22d 6h 32min    |
-  | Status:                      PROCESSING      |
-  | Avg time per item:           3456 ms         |
-  | GPU Memory:                  24% (16.0 Gib)  |
-  +----------------------------------------------+
+  ┌──────────────────────────────────────────────┐
+  │ Home laptop                                  │
+  ├──────────────────────────────────────────────┤
+  │ Up time:                     22d 6h 32min    │
+  │ Status:                      PROCESSING      │
+  │ Avg time per item:           3456 ms         │
+  │ GPU Memory:                  24% (16.0 Gib)  │
+  └──────────────────────────────────────────────┘
 
   GKE Workers                    Total: 2/16
-  +----------------------------------------------+
-  | GKE #1 - Nvidia T4                           |
-  |----------------------------------------------|
-  | Up time:                     2h 18min        |
-  | Status:                      PROCESSING      |
-  | Avg time per item:           2156 ms         |
-  | GPU Memory:                  24% (16.0 Gib)  |
-  |----------------------------------------------|
-  | GKE #2 - Nvidia T4                           |
-  |----------------------------------------------|
-  | Up time:                     18min           |
-  | Status:                      PROCESSING      |
-  | Avg time per item:           1956 ms         |
-  | GPU Memory:                  24% (16.0 Gib)  |
-  +----------------------------------------------+
+  ┌──────────────────────────────────────────────┐
+  │ GKE #1 - Nvidia T4                           │
+  ├──────────────────────────────────────────────┤
+  │ Up time:                     2h 18min        │
+  │ Status:                      PROCESSING      │
+  │ Avg time per item:           2156 ms         │
+  │ GPU Memory:                  24% (16.0 Gib)  │
+  ├──────────────────────────────────────────────┤
+  │ GKE #2 - Nvidia T4                           │
+  ├──────────────────────────────────────────────┤
+  │ Up time:                     18min           │
+  │ Status:                      PROCESSING      │
+  │ Avg time per item:           1956 ms         │
+  │ GPU Memory:                  24% (16.0 Gib)  │
+  └──────────────────────────────────────────────┘
   ```
