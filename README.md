@@ -139,62 +139,62 @@ A fast and simple task queue using Firebase.
       <details><summary>Locally with python</summary>
       <p>
 
-    - Install the requirements (preferably in a [virtualenv]()).
+        - Install the requirements (preferably in a [virtualenv]()).
 
-      ```sh
-      virtualenv venv
-      source venv/bin/activate
-      pip install -r example/worker/requirements.txt
-      ```
+          ```sh
+          virtualenv venv
+          source venv/bin/activate
+          pip install -r example/worker/requirements.txt
+          ```
 
-    - Set the `GOOGLE_APPLICATION_CREDENTIALS` env:
+        - Set the `GOOGLE_APPLICATION_CREDENTIALS` env:
 
-      ```sh
-      export GOOGLE_APPLICATION_CREDENTIALS='/path/to/credentials.json'
-      ```
+          ```sh
+          export GOOGLE_APPLICATION_CREDENTIALS='/path/to/credentials.json'
+          ```
 
-    - Start the example worker
+        - Start the example worker
 
-      ```sh
-      python example/worker/main.py \
-          --queue 'fstq-demo' \
-          --max_batch_size 5
-      ```
+          ```sh
+          python example/worker/main.py \
+              --queue 'fstq-demo' \
+              --max_batch_size 5
+          ```
 
       </p></details>
 
       <details><summary>Locally as Docker container</summary>
       <p>
 
-    - Make sure you've installed and setup [Docker](#).
+        - Make sure you've installed and setup [Docker](#).
 
-    - Start the example worker using Docker
+        - Start the example worker using Docker
 
-      ```sh
-      fstq run example/worker \
-          --queue 'fstq-demo' \
-          --credentials '/path/to/worker/credentials.json' \
-          --max_batch_size 5
-      ```
+          ```sh
+          fstq run example/worker \
+              --queue 'fstq-demo' \
+              --credentials '/path/to/worker/credentials.json' \
+              --max_batch_size 5
+          ```
 
       </p></details>
 
       <details><summary>Remotely in a cluster of GPU</summary>
       <p>
 
-    - Make sure you've installed and setup [gcloud](#).
+        - Make sure you've installed and setup [gcloud](#).
 
-    - Deploy the worker's image and attach a gpu node pool to the queue
+        - Deploy the worker's image and attach a gpu node pool to the queue
 
-      ```sh
-      fstq deploy ./example/worker \
-          --queue 'fstq-demo' \
-          --credentials '/path/to/worker/credentials.json' \
-          --max_batch_size 5 \
-          --gpu nvidia-t4 \
-          --min_workers 0 \
-          --max_workers 5
-      ```
+          ```sh
+          fstq deploy ./example/worker \
+              --queue 'fstq-demo' \
+              --credentials '/path/to/worker/credentials.json' \
+              --max_batch_size 5 \
+              --gpu nvidia-t4 \
+              --min_workers 0 \
+              --max_workers 5
+          ```
 
       </p></details>
 
