@@ -3,7 +3,7 @@
 A fast and simple task queue for intensive workloads (ML, GPU, video
 rendering...etc) using Firebase.
 
-- **Ideal for intensive GPU inference**
+<!-- - **Ideal for intensive GPU inference**
 
   FSTQ's queue / worker architecture is
   ideal for long running GPU processes (> 1s) since concurrency is hard to
@@ -16,7 +16,7 @@ rendering...etc) using Firebase.
   FSTQ makes sure all payloads are stored until a worker becomes available, and
   serves the results back as soon as they're ready.
 
-- **Add new workers anytime, from anywhere**
+- **Add new workers at anytime, from anywhere**
 
   You can quickly connect new
   workers from any environment to help process the queue: For instance you
@@ -36,7 +36,7 @@ rendering...etc) using Firebase.
 - **Always processed once**
 
   FSTQ guarantees that each item will only be processed
-  once even if multiple workers are listening to the queue at the same time.
+  once even if multiple workers are listening to the queue at the same time. -->
 
 # Getting Started
 
@@ -67,9 +67,14 @@ rendering...etc) using Firebase.
 - Items can be added to a processing queue using the [javascript client lib](sdk/client-js).
 
   The example client [example/client/src/index.js]() shows how to add items
-  to a queue called `fstq-demo` (the queue is created when the first item added):
+  to a new `fstq-demo` queue (the queue is created when the first item added):
 
   ```js
+  import fstq from 'fstq'
+  import config from './firebase-config.js'
+
+  fstq.init(config)
+
   async function process() {
     const task = await fstq.push('fstq-demo', { text: 'hello world' })
     const result = await task.result()
@@ -87,8 +92,10 @@ rendering...etc) using Firebase.
   - Run `yarn install`
   - Run `yarn run dev`
   - Navigate to [http://localhost:8080](http://localhost:8080)
+  - It will add the items to the queue, and wait until the items are
+    processed to print the result.
 
-## 3. Process the items with local or remote python workers
+## 3. Process the items with python workers
 
 - Items can be pulled from the queue and processed using the [python worker lib](sdl/worker-python).
 
@@ -96,19 +103,22 @@ rendering...etc) using Firebase.
 
   ```python
   import fstq
-  import model
+
+  def reverse(text):
+      return text[::-1]
 
   @fstq.run
   def process(batch):
-      results = [model(item['text']) for item in batch]
+      results = [reverse(item['text']) for item in batch]
       return [{'text': t} for t in results]
   ```
 
   To run the example worker:
 
-  - Generate a credentials json file for your worker in [the firebase console](#)
+  - First, generate a credentials json file for your worker in [the firebase console](#)
+  - Then you can run the code (either or both):
 
-  - <details><summary>Run locally</summary>
+    <details><summary>Locally</summary>
     <p>
 
     - Make sure you've installed and setup [Docker](#).
@@ -124,7 +134,7 @@ rendering...etc) using Firebase.
 
       </p>
 
-  - <details><summary>Run in an autoscaling remote GPU cluster using GKE</summary>
+  - <details><summary>Remotely in a cluster of GPU</summary>
     <p>
 
     - Make sure you've installed and setup [gcloud](#).
@@ -132,7 +142,7 @@ rendering...etc) using Firebase.
     - Deploy the worker's image and attach a gpu node pool to the queue
 
       ```sh
-      fstq deploy_gke ./example/worker \
+      fstq deploy ./example/worker \
           --queue 'fstq-demo' \
           --credentials '/path/to/worker/credentials.json' \
           --max_batch_size 5 \

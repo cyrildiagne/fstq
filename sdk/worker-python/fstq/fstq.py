@@ -1,13 +1,15 @@
 import argparse
+from enum import Enum
 import time
 import firebase_admin
-from firebase_admin import firestore
+import firebase_admin.firestore
+from google.cloud import firestore
 
 # Initialize firebase admin.
 firebase_admin.initialize_app()
 
 # Initialize firestore client.
-db = firestore.client()
+db = firebase_admin.firestore.client()
 
 # A transaction used to pull batches of items atomically.
 transaction = db.transaction()
@@ -38,7 +40,8 @@ class Status(str, Enum):
 def pull_items(transaction, query_ref, queued_ref, result_ref):
     # Retrieve docs from query
     docs = []
-    for doc in query_ref.get(transaction=transaction):
+    query_results = query_ref.get(transaction=transaction)
+    for doc in query_results:
         # print(doc.id)
         if not doc.exists:
             continue
@@ -75,13 +78,13 @@ def _start(queue, handler, max_batch_size, root_collection_name):
 
         # Save results.
         for i, result in enumerate(results):
-            r_doc = queue_col.collection(Collections.RESULTS).document(
+            r_doc = queue_col.collection(Collections.RESULTS.value).document(
                 docs[i].id)
             batch.update(
                 r_doc, {
                     'task': tasks[i],
                     'result': result,
-                    'status': Status.COMPLETE,
+                    'status': Status.COMPLETE.value,
                     'dateComplete': firestore.SERVER_TIMESTAMP
                 })
         # Commit updates.
@@ -90,11 +93,11 @@ def _start(queue, handler, max_batch_size, root_collection_name):
     print(f'Listening for new tasks in queue: {queue}'
           f' (max_batch_size: {max_batch_size})')
 
-    query_ref = queue_col.collection(Collections.QUEUED).order_by(
+    query_ref = queue_col.collection(Collections.QUEUED.value).order_by(
         'dateAdded', direction=firestore.Query.ASCENDING).limit(max_batch_size)
 
-    queued_ref = queue_col.collection(Collections.QUEUED)
-    result_ref = queue_col.collection(Collections.RESULTS)
+    queued_ref = queue_col.collection(Collections.QUEUED.value)
+    result_ref = queue_col.collection(Collections.RESULTS.value)
 
     try:
         while True:
@@ -103,8 +106,9 @@ def _start(queue, handler, max_batch_size, root_collection_name):
             docs = pull_items(transaction, query_ref, queued_ref, result_ref)
             if len(docs):
                 on_snapshot(docs)
+            else:
+                time.sleep(1)
             # TODO: Inform that worker is still alive periodically.
-            time.sleep(1)
     except KeyboardInterrupt:
         print()
         pass
@@ -112,18 +116,19 @@ def _start(queue, handler, max_batch_size, root_collection_name):
 
 
 def run(worker_func):
-    parser = argparse.ArgumentParser(description='FSTQ')
+    """The worker decorator. Can be used with @fstq.run."""
+    parser = argparse.ArgumentParser(description='FSTQ Worker')
     parser.add_argument('--queue', help='Name of the queue to listen')
     parser.add_argument('--max_batch_size',
                         default=1,
                         type=int,
                         help='Max batch size')
     parser.add_argument('--root_collection_name',
-                        default=Collections.ROOT,
+                        default=Collections.ROOT.value,
                         help='Root collection name')
     args = parser.parse_args()
     # Start the worker
     _start(args.queue,
            worker_func,
            args.max_batch_size,
-           root_collection_name=root_collection_name)
+           root_collection_name=args.root_collection_name)
