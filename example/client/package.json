@@ -12,6 +12,6 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
-    "fstq": "../../sdk/client-js"
+    "fstq": "../../lib/client-js"
   }
 }

@@ -15,10 +15,10 @@ nvm use 12
 firebase emulators:start
 ```
 
-## Dev Client SDK:
+## Dev Client Lib:
 
 ```sh
-cd sdk/client-js
+cd lib/client-js
 yarn install
 yarn link
 yarn run dev

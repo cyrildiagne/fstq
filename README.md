@@ -38,8 +38,6 @@ rendering...etc) using Firebase.
   FSTQ guarantees that each item will only be processed
   once even if multiple workers are listening to the queue at the same time. -->
 
-# Getting Started
-
 ## 1. Setting up
 
 1. Create a [Firebase]() project
@@ -64,7 +62,7 @@ rendering...etc) using Firebase.
 
 ## 2. Add items to a processing queue
 
-- Items can be added to a processing queue using the [javascript client lib](sdk/client-js).
+- Items can be added to a processing queue using the [javascript client lib](lib/client-js).
 
   The example client [example/client/src/index.js]() shows how to add items
   to a new `fstq-demo` queue (the queue is created when the first item added):
