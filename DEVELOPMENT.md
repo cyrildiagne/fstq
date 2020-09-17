@@ -33,3 +33,13 @@ yarn run dev
 
 ## Dev Worker:
 
+```sh
+virtualenv venv
+source venv/bin/activate
+pip install -e lib/worker-python
+```
+
+```sh
+cd example/worker
+python main.py
+```

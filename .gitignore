@@ -3,8 +3,6 @@ creds
 .DS_Store
 .vscode
 venv
-__pycache__
-*.pyc
 
 # Logs
 logs

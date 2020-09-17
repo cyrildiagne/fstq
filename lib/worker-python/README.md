@@ -1,0 +1,1 @@
+Python worker lib for [FSTQ](https://github.com/cyrildiagne/fstq)
