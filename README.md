@@ -189,7 +189,7 @@ rendering...etc) using Firebase.
   Output:
 
   ```
-  Queue:                         fstq-demo
+   Queue:                               fstq-demo
   ┌──────────────────────────────────────────────┐
   │ Queued:                      52 items        │
   │ Processed:                   3045 items      │
@@ -201,29 +201,29 @@ rendering...etc) using Firebase.
   │ Average latency:             2400 ms         │
   └──────────────────────────────────────────────┘
 
-  Local Workers                  Total: 1
+   Local Workers                         Total: 1
   ┌──────────────────────────────────────────────┐
   │ Home laptop                                  │
   ├──────────────────────────────────────────────┤
-  │ Up time:                     22d 6h 32min    │
   │ Status:                      PROCESSING      │
+  │ Up time:                     22d 6h 32min    │
   │ Avg time per item:           3456 ms         │
   │ GPU Memory:                  24% (16.0 Gib)  │
   └──────────────────────────────────────────────┘
 
-  GKE Workers                    Total: 2/16
+   GKE Workers                      Total: 2 / 16
   ┌──────────────────────────────────────────────┐
   │ GKE #1 - Nvidia T4                           │
   ├──────────────────────────────────────────────┤
-  │ Up time:                     2h 18min        │
   │ Status:                      PROCESSING      │
+  │ Up time:                     2h 18min        │
   │ Avg time per item:           2156 ms         │
   │ GPU Memory:                  24% (16.0 Gib)  │
   ├──────────────────────────────────────────────┤
   │ GKE #2 - Nvidia T4                           │
   ├──────────────────────────────────────────────┤
-  │ Up time:                     18min           │
   │ Status:                      PROCESSING      │
+  │ Up time:                     18min           │
   │ Avg time per item:           1956 ms         │
   │ GPU Memory:                  24% (16.0 Gib)  │
   └──────────────────────────────────────────────┘
