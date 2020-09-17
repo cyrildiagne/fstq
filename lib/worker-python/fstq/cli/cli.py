@@ -1,9 +1,10 @@
 import click
+import firebase_admin
+import firebase_admin.firestore
 import os
 import sys
 
-import firebase_admin
-import firebase_admin.firestore
+from . import docker
 
 
 @click.command()
@@ -24,50 +25,14 @@ def create(queue_name: str, project: str):
 @click.option("--max_batch_size", default=1, help="Max batch size.")
 def run(queue: str, credentials: str, max_batch_size: int):
     """Run a worker locally using Docker."""
-    import docker
-    try:
-        client = docker.from_env()
-    except docker.errors.DockerException:
-        exit('Error connecting to Docker. Is it running?')
-
-    if not os.path.exists('./Dockerfile'):
-        exit('Could not find Dockerfile in current context.')
-
     tag = f'{queue}:latest'
-
-    # Build Docker image.
-    resp = client.api.build(path='.', rm=True, tag=tag, decode=True)
-    build_success = None
-    for line in resp:
-        event = list(line.keys())[0]
-        if event in ('stream', 'error'):
-            value = list(line.values())[0].strip()
-            if value:
-                print(value)
-            if event == 'stream' and 'successfully tagged' in value.lower():
-                build_success = True
-        else:
-            print(line)
-    if not build_success:
-        exit('Error building Docker image')
-
-    # Run Docker image.
-    print('Running docker image')
+    volumes = [f'{credentials}:/credentials.json']
+    env = {'GOOGLE_APPLICATION_CREDENTIALS': '/credentials.json'}
     cmd = [
         'python', 'main.py', '--queue', queue, '--max_batch_size',
         str(max_batch_size)
     ]
-    container = client.containers.run(
-        tag,
-        command=cmd,
-        volumes=[f'{credentials}:/credentials.json'],
-        environment={'GOOGLE_APPLICATION_CREDENTIALS': '/credentials.json'},
-        remove=True,
-        stderr=True,
-        detach=True)
-    process = container.logs(stream=True)
-    for line in process:
-        sys.stdout.write(line.decode())
+    docker.build_and_run(tag, volumes, env, cmd)
 
 
 @click.command()
@@ -97,9 +62,7 @@ def main():
 
 
 def _get_db():
-    # Initialize firebase admin.
     firebase_admin.initialize_app()
-    # Initialize firestore client.
     db = firebase_admin.firestore.client()
     return db
 
