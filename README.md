@@ -211,23 +211,27 @@ rendering...etc) using Firebase.
   │ GPU Mem:                     87% (8.0 Gib)   │
   └──────────────────────────────────────────────┘
 
-   GKE Workers                      Total: 2 / 16
+   GKE Workers                      Total: 3 / 16
   ┌──────────────────────────────────────────────┐
-  │ Node 1                                       │
+  │ Nvidia-T4                                    │
   ├──────────────────────────────────────────────┤
   │ Status:                      PROCESSING      │
   │ Up time:                     2h 18min        │
   │ Avg time per item:           2156 ms         │
+  │ CPU:                         63% (2 vCPU)    │
+  │ Mem:                         72% (8.0 Gib)   │
   │ GPU Mem:                     24% (16.0 Gib)  │
   ├──────────────────────────────────────────────┤
-  │ Node 2                                       │
+  │ Nvidia-T4                                    │
   ├──────────────────────────────────────────────┤
   │ Status:                      PROCESSING      │
   │ Up time:                     18min           │
   │ Avg time per item:           1956 ms         │
+  │ CPU:                         63% (2 vCPU)    │
+  │ Mem:                         72% (8.0 Gib)   │
   │ GPU Mem:                     22% (16.0 Gib)  │
   ├──────────────────────────────────────────────┤
-  │ Node 3                                       │
+  │ Nvidia-T4                                    │
   ├──────────────────────────────────────────────┤
   │ Status:                      STARTING        │
   │ Up time:                     18min           │
