@@ -2,7 +2,7 @@
 
 A fast and simple task queue using Firebase.
 
-**Status:** 🧪 Experimental
+**Status:**  Experimental 🧪
 
 <!-- - **Ideal for intensive GPU inference**
 
@@ -85,7 +85,7 @@ A fast and simple task queue using Firebase.
   }
   ```
 
-  <details><summary><b>📘 Instructions to run the client example</b></summary>
+  <details><summary><b>Instructions to run the client example</b></summary>
   <p>
 
   - Create a file `example/client/src/firebase-config.js` that exports your
@@ -129,7 +129,7 @@ A fast and simple task queue using Firebase.
       return [{'text': t} for t in results]
   ```
 
-  <details><summary><b>📘 Instructions to run the worker example</b></summary>
+  <details><summary><b>Instructions to run the worker example</b></summary>
   <p>
 
   - First, generate a credentials json file for your worker in [the firebase console](#)
