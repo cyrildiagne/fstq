@@ -116,7 +116,22 @@ rendering...etc) using Firebase.
   - First, generate a credentials json file for your worker in [the firebase console](#)
   - Then you can run the code (either or both):
 
-    <details><summary>Locally</summary>
+    <details><summary>Locally with python</summary>
+    <p>
+
+    - Make sure you've installed the requirements (preferably in a virtualenv).
+
+    - Start the example worker
+
+      ```sh
+      python example/worker/main.py \
+          --queue 'fstq-demo' \
+          --max_batch_size 5
+      ```
+
+    </p>
+
+    <details><summary>Locally as Docker container</summary>
     <p>
 
     - Make sure you've installed and setup [Docker](#).
@@ -130,9 +145,9 @@ rendering...etc) using Firebase.
           --max_batch_size 5
       ```
 
-      </p>
+    </p>
 
-  - <details><summary>Remotely in a cluster of GPU</summary>
+    <details><summary>Remotely in a cluster of GPU</summary>
     <p>
 
     - Make sure you've installed and setup [gcloud](#).
@@ -149,7 +164,7 @@ rendering...etc) using Firebase.
           --max_workers 5
       ```
 
-      </p>
+    </p>
 
 ## 4. Monitor
 
