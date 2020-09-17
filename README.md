@@ -85,10 +85,13 @@ rendering...etc) using Firebase.
 
   To run the example client:
 
-  - `cd example/client`
-  - Create a file `src/firebase-config.js` that exports your [firebase's web config]().
-  - Run `yarn install`
-  - Run `yarn run dev`
+  - Create a file `example/client/src/firebase-config.js` that exports your [firebase's web config]().
+  - Run
+    ```sh
+    cd example/client
+    yarn install
+    yarn run dev
+    ```
   - Navigate to [http://localhost:8080](http://localhost:8080)
   - It will add the items to the queue, and wait until the items are
     processed to print the result.
@@ -129,7 +132,7 @@ rendering...etc) using Firebase.
           --max_batch_size 5
       ```
 
-    </p>
+    </p></details>
 
     <details><summary>Locally as Docker container</summary>
     <p>
@@ -145,7 +148,7 @@ rendering...etc) using Firebase.
           --max_batch_size 5
       ```
 
-    </p>
+    </p></details>
 
     <details><summary>Remotely in a cluster of GPU</summary>
     <p>
@@ -164,7 +167,7 @@ rendering...etc) using Firebase.
           --max_workers 5
       ```
 
-    </p>
+    </p></details>
 
 ## 4. Monitor
 
