@@ -220,6 +220,7 @@ rendering...etc) using Firebase.
   │ Avg time per item:           2156 ms         │
   │ CPU:                         63% (2 vCPU)    │
   │ Mem:                         72% (8.0 Gib)   │
+  │ GPU:                         12% (5840 cc)   │
   │ GPU Mem:                     24% (16.0 Gib)  │
   ├──────────────────────────────────────────────┤
   │ Nvidia-T4                                    │
@@ -229,6 +230,7 @@ rendering...etc) using Firebase.
   │ Avg time per item:           1956 ms         │
   │ CPU:                         63% (2 vCPU)    │
   │ Mem:                         72% (8.0 Gib)   │
+  │ GPU:                         12% (5840 cc)   │
   │ GPU Mem:                     22% (16.0 Gib)  │
   ├──────────────────────────────────────────────┤
   │ Nvidia-T4                                    │
