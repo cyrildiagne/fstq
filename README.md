@@ -48,10 +48,11 @@ A fast and simple task queue using Firebase.
    npm install -g firebase-tools && firebase init
    ```
 
-3. Install the fstq CLI
+3. Install the fstq CLI (dev)
 
    ```sh
-   pip install fstq
+   git clone https://github.com/cyrildiagne/fstq
+   pip install fstq/lib/worker-python
    ```
 
 ## 1. Create a queue

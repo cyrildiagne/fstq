@@ -1,1 +1,1 @@
-from fstq.fstq import *
+from fstq.lib import run

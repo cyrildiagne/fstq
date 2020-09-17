@@ -13,6 +13,13 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/cyrildiagne/fstq",
     packages=setuptools.find_packages(),
+    entry_points='''
+        [console_scripts]
+        fstq=fstq.cli.cli:main
+    ''',
+    install_requires=[
+        'click==7.1.2', 'firebase-admin==4.4.0', 'docker==4.3.1'
+    ],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

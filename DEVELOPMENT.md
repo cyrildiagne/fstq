@@ -1,10 +1,13 @@
 ## Dev Functions:
 
+Install the dependencies
+
 ```sh
 cd functions
 yarn install
 ```
 
+Start the firebase emulator
 
 ```sh
 # Load node v12
@@ -17,12 +20,16 @@ firebase emulators:start
 
 ## Dev Client Lib:
 
+Install dependencies, link the lib and start the client lib
+
 ```sh
 cd lib/client-js
 yarn install
 yarn link
 yarn run dev
 ```
+
+Link the lib and run the client example
 
 ```sh
 cd example/client
@@ -33,13 +40,23 @@ yarn run dev
 
 ## Dev Worker:
 
+Install the worker lib as an editable package
+
 ```sh
-virtualenv venv
-source venv/bin/activate
 pip install -e lib/worker-python
 ```
+
+Run the example
 
 ```sh
 cd example/worker
 python main.py
+```
+
+### With Docker:
+
+```sh
+cp -r ../../lib/worker-python .fstq
+fstq run --queue 'my-queue' --credentials '/path/to/credentials.json'
+rm -rf .fstq
 ```

@@ -1,0 +1,1 @@
+Javascript client lib for [FSTQ](https://github.com/cyrildiagne/fstq)
