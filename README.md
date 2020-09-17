@@ -1,6 +1,8 @@
 # FSTQ
 
-A fast and simple task queue with Firebase.
+A fast and simple task queue using Firebase.
+
+**Status:** 🧪 Experimental
 
 <!-- - **Ideal for intensive GPU inference**
 
@@ -63,7 +65,7 @@ A fast and simple task queue with Firebase.
 
 - Items can be added to the queue using the [javascript client lib](lib/client-js).
 
-  The [client example](example/client/src/index.js) shows to add items
+  The [client example](example/client/src/index.js) shows how to add items
   to the queue and wait for the results:
 
   ```js
@@ -83,7 +85,7 @@ A fast and simple task queue with Firebase.
   }
   ```
 
-  <details><summary><b>Instructions to run the client example</b></summary>
+  <details><summary><b>📘 Instructions to run the client example</b></summary>
   <p>
 
   - Create a file `example/client/src/firebase-config.js` that exports your
@@ -127,7 +129,7 @@ A fast and simple task queue with Firebase.
       return [{'text': t} for t in results]
   ```
 
-  <details><summary>Instructions to run the worker example</summary>
+  <details><summary><b>📘 Instructions to run the worker example</b></summary>
   <p>
 
   - First, generate a credentials json file for your worker in [the firebase console](#)
