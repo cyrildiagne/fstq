@@ -189,13 +189,14 @@ rendering...etc) using Firebase.
   Output:
 
   ```
-   Queue:                               fstq-demo
+   Queue
   ┌──────────────────────────────────────────────┐
+  │ fstq-demo                                    │
+  ├──────────────────────────────────────────────┤
   │ Queued:                      52 items        │
   │ Processed:                   3045 items      │
   │ Failed:                      20 items        │
   │ Failed (last hour):          0 items         │
-  ├──────────────────────────────────────────────┤
   │ Incoming rate:               3 items/s       │
   │ Processing rate:             2 items/s       │
   │ Average latency:             2400 ms         │
