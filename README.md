@@ -85,7 +85,16 @@ rendering...etc) using Firebase.
 
   To run the example client:
 
-  - Create a file `example/client/src/firebase-config.js` that exports your [firebase's web config]().
+  - Create a file `example/client/src/firebase-config.js` that exports your [firebase's web config]() such as:
+
+    ```js
+    export default {
+      apiKey: 'XXXX',
+      authDomain: 'xxx',
+      ...
+    }
+    ```
+
   - Run
     ```sh
     cd example/client
