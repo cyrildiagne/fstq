@@ -102,7 +102,7 @@ def _start(queue, handler, max_batch_size, root_collection_name):
     print('Closing...')
 
 
-def run(worker_func):
+def process(worker_func):
     """The worker decorator. Can be used with @fstq.run."""
     parser = argparse.ArgumentParser(description='FSTQ Worker')
     parser.add_argument('--queue', help='Name of the queue to listen')

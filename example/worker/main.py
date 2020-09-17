@@ -11,7 +11,7 @@ python main.py \
 import fstq
 
 
-@fstq.run
+@fstq.process
 def process(batch):
     # Reverse the `text` string of each item as an example worload.
     results = [item['text'][::-1] for item in batch]

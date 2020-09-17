@@ -124,7 +124,7 @@ A fast and simple task queue using Firebase.
   def reverse(text):
       return text[::-1]
 
-  @fstq.run
+  @fstq.process
   def process(batch):
       results = [reverse(item['text']) for item in batch]
       return [{'text': t} for t in results]
