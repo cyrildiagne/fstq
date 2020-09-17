@@ -23,8 +23,8 @@ def create(queue_name: str, project: str):
 @click.option("--queue", required=True, help="The FSTQ queue.")
 @click.option("--credentials", required=True, help="Path to the credentials.")
 @click.option("--max_batch_size", default=1, help="Max batch size.")
-def run(queue: str, credentials: str, max_batch_size: int):
-    """Run a worker locally using Docker."""
+def process(queue: str, credentials: str, max_batch_size: int):
+    """Process the queue locally using Docker."""
     tag = f'{queue}:latest'
     volumes = [f'{credentials}:/credentials.json']
     env = {'GOOGLE_APPLICATION_CREDENTIALS': '/credentials.json'}
@@ -68,6 +68,6 @@ def _get_db():
 
 
 main.add_command(create)
-main.add_command(run)
+main.add_command(process)
 main.add_command(deploy)
 main.add_command(monitor)
