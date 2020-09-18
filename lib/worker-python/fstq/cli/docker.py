@@ -3,17 +3,24 @@ import os
 import sys
 
 
-def build_and_run(tag, volumes, env, cmd):
+def get_client():
     try:
         client = docker.from_env()
     except docker.errors.DockerException:
         exit('Error connecting to Docker. Is it running?')
+    return client
 
+
+def build(tag):
+    """Build a Docker image."""
     if not os.path.exists('./Dockerfile'):
         exit('Could not find Dockerfile in current context.')
 
     # Build Docker image.
+    client = get_client()
     resp = client.api.build(path='.', rm=True, tag=tag, decode=True)
+
+    # Stream logs.
     build_success = None
     for line in resp:
         event = list(line.keys())[0]
@@ -28,8 +35,10 @@ def build_and_run(tag, volumes, env, cmd):
     if not build_success:
         exit('Error building Docker image')
 
-    # Run Docker image.
-    print('Running docker image...')
+
+def run(tag, volumes, env, cmd):
+    """Run a Docker container."""
+    client = get_client()
     container = client.containers.run(tag,
                                       command=cmd,
                                       volumes=volumes,

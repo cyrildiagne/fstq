@@ -5,7 +5,7 @@ import firebase_admin.firestore
 from google.cloud import firestore
 import sys
 
-from .common import Collections, Status
+from .common import Collections, Status, Metrics
 
 
 @firestore.transactional
@@ -29,39 +29,34 @@ def _pull_items(transaction, query_ref, queued_ref, result_ref):
 
 
 def _start(queue, handler, max_batch_size, root_collection_name):
-
     # Limit to 250 to respect firestore's num transactions limit of 500
     # combining writes and deletes.
     # https://firebase.google.com/docs/firestore/manage-data/transactions
     if max_batch_size > 250:
         raise Exception('max_batch_size must be <= 250')
-
     # Initialize firebase admin.
     firebase_admin.initialize_app()
-
     # Initialize firestore client.
     db = firebase_admin.firestore.client()
-
     # A transaction used to pull batches of items atomically.
     transaction = db.transaction()
-
     # A batch to set a batch of results at once.
     batch = db.batch()
-
     # Ref to the current queue
     queue_col = db.collection(root_collection_name).document(queue)
+    # Ref to the current queue
+    metrics_doc = queue_col.collection(
+        Collections.METADATA.value).document('metrics')
 
     # Create a callback on_snapshot function to capture changes.
     def on_snapshot(docs):
         # Return if there is no new document to process.
         if len(docs) == 0:
             return
-
         # Process batch.
         # TODO: Handle failure
         tasks = [doc.to_dict()['payload'] for doc in docs]
         results = handler(tasks)
-
         # Save results.
         for i, result in enumerate(results):
             r_doc = queue_col.collection(Collections.RESULTS.value).document(
@@ -72,6 +67,12 @@ def _start(queue, handler, max_batch_size, root_collection_name):
                     'result': result,
                     'status': Status.COMPLETE.value,
                     'dateComplete': firestore.SERVER_TIMESTAMP
+                })
+            # Update the metric
+            batch.update(
+                metrics_doc, {
+                    Metrics.NUM_QUEUED: firestore.Increment(-1),
+                    Metrics.NUM_PROCESSED: firestore.Increment(1)
                 })
         # Commit updates.
         batch.commit()

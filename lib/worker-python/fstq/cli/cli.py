@@ -4,7 +4,7 @@ import firebase_admin.firestore
 import os
 import sys
 
-from . import docker
+from . import docker, metrics
 
 
 @click.command()
@@ -25,12 +25,15 @@ def create(queue_name: str, project: str):
 @click.option("--max_batch_size", default=1, help="Max batch size.")
 def process(queue: str, credentials: str, max_batch_size: int):
     """Process the queue locally using Docker."""
+    print('Building the Docker image...')
     tag = f'{queue}:latest'
+    docker.build(tag)
+    print('Running the Docker image...')
     volumes = [f'{credentials}:/credentials.json']
     env = {'GOOGLE_APPLICATION_CREDENTIALS': '/credentials.json'}
     cmd = ['python', 'main.py']
     args = ['--queue', queue, '--max_batch_size', str(max_batch_size)]
-    docker.build_and_run(tag, volumes, env, cmd + args)
+    docker.run(tag, volumes, env, cmd + args)
 
 
 @click.command()
@@ -59,10 +62,11 @@ def delete():
 
 
 @click.command()
-def monitor():
+@click.argument("queue")
+def monitor(queue: str):
     """Print queue metrics."""
-    #TODO: print stats
-    print('WIP')
+    db = _get_db()
+    metrics.snapshot(db, queue)
 
 
 @click.group()

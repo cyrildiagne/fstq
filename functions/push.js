@@ -13,15 +13,22 @@ const cors = require('cors')({ origin: true })
 const admin = require('firebase-admin')
 admin.initializeApp()
 
+// Get a db handle.
+const db = admin.firestore()
+
 // Push HTTP Endpoint.
 exports.push = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
     try {
       // Grab the payload.
       const { payload, queue } = JSON.parse(req.body.data)
-      const queueDoc = admin.firestore().collection(Collections.ROOT).doc(queue)
+      const queueDoc = db.collection(Collections.ROOT).doc(queue)
+      // Initialize a batch write
+      const batch = db.batch()
       // Add empty result for the client to listen to.
-      const resultItemDoc = await queueDoc.collection(Collections.RESULTS).add({
+      const resultsQueueRef = queueDoc.collection(Collections.RESULTS)
+      const resultItemDoc = resultsQueueRef.doc()
+      batch.set(resultItemDoc, {
         status: Status.QUEUED,
         dateAdded: admin.firestore.FieldValue.serverTimestamp(),
       })
@@ -29,11 +36,20 @@ exports.push = functions.https.onRequest((req, res) => {
       const queuedItemDoc = queueDoc
         .collection(Collections.QUEUED)
         .doc(resultItemDoc.id)
-      await queuedItemDoc.set({
+      batch.set(queuedItemDoc, {
         payload,
         dateAdded: admin.firestore.FieldValue.serverTimestamp(),
       })
-      // Send back a message that we've succesfully written the message
+      // Increment item queued counter.
+      const metricsItemDoc = queueDoc
+        .collection(Collections.METADATA)
+        .doc('metrics')
+      batch.update(metricsItemDoc, {
+        numQueued: admin.firestore.FieldValue.increment(1),
+      })
+      // Commit writes.
+      await batch.commit()
+      // Send back a message that we've succesfully written the message.
       res.json({ data: { id: resultItemDoc.id, status: Status.QUEUED } })
     } catch (e) {
       console.log(e)

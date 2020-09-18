@@ -6,6 +6,8 @@ const Collections = {
   QUEUED: 'queued',
   // Results collection name
   RESULTS: 'results',
+  // Results collection name
+  METADATA: 'metadata',
 }
 
 // Possible item processing statuses
@@ -18,7 +20,18 @@ const Status = {
   FAILED: 'failed',
 }
 
+// Metrics
+const Metrics = {
+  // Items queued.
+  NUM_QUEUED: 'numQueued',
+  // Items processed.
+  NUM_PROCESSED: 'numProcessed',
+  // Items failed.
+  NUM_FAILED: 'numFailed',
+}
+
 module.exports = {
   Collections,
   Status,
+  Metrics,
 }
