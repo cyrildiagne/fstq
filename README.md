@@ -55,6 +55,19 @@ A fast and simple task queue using Firebase.
    pip install fstq/lib/worker-python
    ```
 
+4. Setup [security rules]() to restrict access to the queues. A minimal example:
+
+   ```sh
+   rules_version = '2';
+   service cloud.firestore {
+     match /databases/{database}/documents {
+       match /fstq/{queue}/results/{doc} {
+         allow read: if true;
+       }
+     }
+   }
+   ```
+
 ## 1. Create a queue
 
 - Simply run
@@ -129,7 +142,7 @@ A fast and simple task queue using Firebase.
       results = [reverse(item['text']) for item in batch]
       return [{'text': t} for t in results]
   ```
-  
+
   ```sh
   fstq process . \
     --queue 'fstq-demo' \
@@ -233,49 +246,50 @@ A fast and simple task queue using Firebase.
   │ GKE Workers:                 3 / 16          │
   └──────────────────────────────────────────────┘
   ```
-<!-- 
-  ```sh
-  fstq monitor 'fstq-demo' --workers
-  ```
 
-  ```
+  <!--
+    ```sh
+    fstq monitor 'fstq-demo' --workers
+    ```
 
-   Local Workers                         Total: 1
-  ┌──────────────────────────────────────────────┐
-  │ Home laptop                                  │
-  ├──────────────────────────────────────────────┤
-  │ Status:                      PROCESSING      │
-  │ Up time:                     22d 6h 32min    │
-  │ Avg time per item:           3456 ms         │
-  │ CPU:                         63% (2 CPU)     │
-  │ Mem:                         72% (8.0 Gb)    │
-  └──────────────────────────────────────────────┘
+    ```
 
-   GKE Workers                      Total: 3 / 16
-  ┌──────────────────────────────────────────────┐
-  │ Nvidia-T4                                    │
-  ├──────────────────────────────────────────────┤
-  │ Status:                      PROCESSING      │
-  │ Up time:                     2h 18min        │
-  │ Avg time per item:           2156 ms         │
-  │ CPU:                         63% (2 vCPU)    │
-  │ Mem:                         72% (8.0 Gib)   │
-  │ GPU:                         12% (5840 cc)   │
-  │ GPU Mem:                     24% (16.0 Gib)  │
-  ├──────────────────────────────────────────────┤
-  │ Nvidia-T4                                    │
-  ├──────────────────────────────────────────────┤
-  │ Status:                      PROCESSING      │
-  │ Up time:                     18min           │
-  │ Avg time per item:           1956 ms         │
-  │ CPU:                         63% (2 vCPU)    │
-  │ Mem:                         72% (8.0 Gib)   │
-  │ GPU:                         12% (5840 cc)   │
-  │ GPU Mem:                     22% (16.0 Gib)  │
-  ├──────────────────────────────────────────────┤
-  │ Nvidia-T4                                    │
-  ├──────────────────────────────────────────────┤
-  │ Status:                      STARTING        │
-  │ Up time:                     18min           │
-  └──────────────────────────────────────────────┘
-  ``` -->
+     Local Workers                         Total: 1
+    ┌──────────────────────────────────────────────┐
+    │ Home laptop                                  │
+    ├──────────────────────────────────────────────┤
+    │ Status:                      PROCESSING      │
+    │ Up time:                     22d 6h 32min    │
+    │ Avg time per item:           3456 ms         │
+    │ CPU:                         63% (2 CPU)     │
+    │ Mem:                         72% (8.0 Gb)    │
+    └──────────────────────────────────────────────┘
+
+     GKE Workers                      Total: 3 / 16
+    ┌──────────────────────────────────────────────┐
+    │ Nvidia-T4                                    │
+    ├──────────────────────────────────────────────┤
+    │ Status:                      PROCESSING      │
+    │ Up time:                     2h 18min        │
+    │ Avg time per item:           2156 ms         │
+    │ CPU:                         63% (2 vCPU)    │
+    │ Mem:                         72% (8.0 Gib)   │
+    │ GPU:                         12% (5840 cc)   │
+    │ GPU Mem:                     24% (16.0 Gib)  │
+    ├──────────────────────────────────────────────┤
+    │ Nvidia-T4                                    │
+    ├──────────────────────────────────────────────┤
+    │ Status:                      PROCESSING      │
+    │ Up time:                     18min           │
+    │ Avg time per item:           1956 ms         │
+    │ CPU:                         63% (2 vCPU)    │
+    │ Mem:                         72% (8.0 Gib)   │
+    │ GPU:                         12% (5840 cc)   │
+    │ GPU Mem:                     22% (16.0 Gib)  │
+    ├──────────────────────────────────────────────┤
+    │ Nvidia-T4                                    │
+    ├──────────────────────────────────────────────┤
+    │ Status:                      STARTING        │
+    │ Up time:                     18min           │
+    └──────────────────────────────────────────────┘
+    ``` -->

@@ -3,20 +3,35 @@ import firebase_admin
 import firebase_admin.firestore
 import os
 import sys
-
 from . import docker, metrics
+from fstq.common import Collections, Metrics
 
 
 @click.command()
-@click.argument("queue_name")
+@click.argument("queue")
 @click.option("--project", required=True, help="The Firebase project id.")
-def create(queue_name: str, project: str):
+def create(queue: str, project: str):
     """Create a new queue."""
-    #TODO: Make sure Firestore is enabled
-    #TODO: Create the security rules
+    #TODO: Make sure Firestore is enabled in project
+
+    # Get queue doc ref.
+    db = _get_db()
+    queue_col = db.collection(Collections.ROOT).document(queue)
+    # Initialize metrics.
+    metrics_doc = queue_col.collection(
+        Collections.METADATA.value).document('metrics')
+    # Make sure queue doesn't exists already.
+    if metrics_doc.get().exists:
+        raise Exception('Error: Queue already exists')
+    metrics_doc.set({
+        Metrics.NUM_QUEUED: 0,
+        Metrics.NUM_PROCESSED: 0,
+        Metrics.NUM_FAILED: 0,
+    })
+
     #TODO: Deploy the Functions
-    #TODO: Create empty doc
-    print('WIP')
+
+    print(f'Queue "{queue}" created.')
 
 
 @click.command()
@@ -56,8 +71,8 @@ def deploy(queue: str, project: str):
 def delete():
     """Delete a GKE worker pool."""
     #TODO: Delete the deployment
-    #TODO: Delete the gkeAutoscaler fn
     #TODO: Scale down node pool to 0
+    #TODO: Delete the gkeAutoscaler fn
     print('WIP')
 
 
