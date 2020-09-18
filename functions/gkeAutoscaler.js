@@ -4,7 +4,6 @@ const { Collections } = require('./types')
 // config must be set before deploying the function
 // https://firebase.google.com/docs/functions/config-env#use_environment_configuration_to_initialize_a_module
 const queue = functions.config().queue
-
 const queueCol = `${Collections.ROOT}/${queue}/${Collections.QUEUED}/{itemId}`
 
 exports.gkeAutoscaler = functions.firestore

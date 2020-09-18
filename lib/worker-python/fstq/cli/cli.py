@@ -28,11 +28,9 @@ def process(queue: str, credentials: str, max_batch_size: int):
     tag = f'{queue}:latest'
     volumes = [f'{credentials}:/credentials.json']
     env = {'GOOGLE_APPLICATION_CREDENTIALS': '/credentials.json'}
-    cmd = [
-        'python', 'main.py', '--queue', queue, '--max_batch_size',
-        str(max_batch_size)
-    ]
-    docker.build_and_run(tag, volumes, env, cmd)
+    cmd = ['python', 'main.py']
+    args = ['--queue', queue, '--max_batch_size', str(max_batch_size)]
+    docker.build_and_run(tag, volumes, env, cmd + args)
 
 
 @click.command()
