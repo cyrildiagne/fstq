@@ -36,16 +36,27 @@ def process(queue: str, credentials: str, max_batch_size: int):
 
 
 @click.command()
+@click.option("--queue", required=True, help="The FSTQ queue.")
 @click.option("--project", required=True, help="The Firebase project id.")
-def deploy():
+def deploy(queue: str, project: str):
     """Deploy a worker to GKE."""
-    #TODO: Ensure gcloud is installed and configured
-    #TODO: Ensure that the project has a  GKE cluster
+    #TODO: Ensure that gcloud is installed and configured
+    #TODO: Ensure that the project has an 'fstq' GKE cluster
     #TODO: Ensure that the cluster has a fstq node pool with the selected GPU
     #TODO: Set a Kubernetes secret with the Firebase credentials provided
     #TODO: Build a Docker image from the cwd and push it to GCR
     #TODO: Create/update a deployment using the image built and the secret
-    #TODO: Start autoscaling the workers based on the queue's size / proc rate
+    #TODO: Deploy the gkeAutoscaler fn with a firestore trigger on the queue
+    print('WIP')
+
+
+@click.command()
+@click.option("--project", required=True, help="The Firebase project id.")
+def delete():
+    """Delete a GKE worker pool."""
+    #TODO: Delete the deployment
+    #TODO: Delete the gkeAutoscaler fn
+    #TODO: Scale down node pool to 0
     print('WIP')
 
 

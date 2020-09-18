@@ -1,5 +1,7 @@
 'use strict'
 
+const { Collections, Status } = require('./types')
+
 // The Cloud Functions for Firebase SDK to create Cloud Functions and setup
 // triggers.
 const functions = require('firebase-functions')
@@ -10,26 +12,6 @@ const cors = require('cors')({ origin: true })
 // The Firebase Admin SDK to access Cloud Firestore.
 const admin = require('firebase-admin')
 admin.initializeApp()
-
-// Collections names
-const Collections = {
-  // Root collection name
-  ROOT: 'fstq',
-  // Queue collection name
-  QUEUED: 'queued',
-  // Results collection name
-  RESULTS: 'results',
-}
-
-// Possible item processing statuses
-const Status = {
-  // Item is queued waiting to be processed.
-  QUEUED: 'queued',
-  // Item has been processed successfully.
-  COMPLETE: 'complete',
-  // Item processing failed.
-  FAILED: 'failed',
-}
 
 // Push HTTP Endpoint.
 exports.push = functions.https.onRequest((req, res) => {

@@ -189,6 +189,7 @@ A fast and simple task queue using Firebase.
 
       ```sh
       fstq deploy ./example/worker \
+          --project 'your-firebase-project-id'
           --queue 'fstq-demo' \
           --credentials '/path/to/worker/credentials.json' \
           --max_batch_size 5 \
