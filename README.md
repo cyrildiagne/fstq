@@ -222,7 +222,16 @@ A fast and simple task queue using Firebase.
   │ Incoming rate:               3 items/s       │
   │ Processing rate:             2 items/s       │
   │ Avg latency:                 2400 ms         │
+  │ Local Workers:               1               │
+  │ GKE Workers:                 3 / 16          │
   └──────────────────────────────────────────────┘
+  ```
+<!-- 
+  ```sh
+  fstq monitor 'fstq-demo' --workers
+  ```
+
+  ```
 
    Local Workers                         Total: 1
   ┌──────────────────────────────────────────────┐
@@ -262,4 +271,4 @@ A fast and simple task queue using Firebase.
   │ Status:                      STARTING        │
   │ Up time:                     18min           │
   └──────────────────────────────────────────────┘
-  ```
+  ``` -->
