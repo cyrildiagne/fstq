@@ -114,7 +114,7 @@ A fast and simple task queue using Firebase.
 
 ## 3. Process the queue
 
-- Items can be pulled from the queue and processed using the [python worker lib](sdl/worker-python).
+- Items in the queue can be processed using the [python worker lib](sdl/worker-python).
 
   The [worker example](example/worker/main.py) shows how to process incoming items:
 
@@ -136,8 +136,8 @@ A fast and simple task queue using Firebase.
   - First, generate a credentials json file for your worker in [the firebase console](#)
   - Then you can run the worker:
 
-      <details><summary>Locally with python</summary>
-      <p>
+    <details><summary>Locally with python</summary>
+    <p>
 
     - Install the requirements (preferably in a [virtualenv]()).
 
@@ -161,10 +161,10 @@ A fast and simple task queue using Firebase.
           --max_batch_size 5
       ```
 
-      </p></details>
+    </p></details>
 
-      <details><summary>Locally as Docker container</summary>
-      <p>
+    <details><summary>Locally as Docker container</summary>
+    <p>
 
     - Make sure you've installed and setup [Docker](#).
 
@@ -178,10 +178,10 @@ A fast and simple task queue using Firebase.
           --max_batch_size 5
       ```
 
-      </p></details>
+    </p></details>
 
-      <details><summary>Remotely in a cluster of GPU</summary>
-      <p>
+    <details><summary>Remotely in a cluster of GPU</summary>
+    <p>
 
     - Make sure you've installed and setup [gcloud](#).
 
