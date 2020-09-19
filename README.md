@@ -135,13 +135,7 @@ A fast and simple task queue using Firebase.
       results = [reverse(item['text']) for item in batch]
       return [{'text': t} for t in results]
   ```
-
-  ```sh
-  fstq process . \
-    --queue 'fstq-demo' \
-    --max_batch_size 5
-  ```
-
+  
   <details><summary><b>Instructions to run the worker example</b></summary>
   <p>
 
