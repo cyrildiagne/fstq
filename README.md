@@ -44,11 +44,16 @@ A fast and simple task queue using Firebase.
 1. Create a [Firebase]() project
 2. Install and initialize the [Firebase tools](#)
 
-   ```
+   ```sh
    npm install -g firebase-tools && firebase init
    ```
 
 3. Deploy the functions and firestore configuration
+
+   ```sh
+   firebase deploy
+   ```
+
 4. Install the fstq CLI (dev)
 
    ```sh
