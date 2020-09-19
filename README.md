@@ -135,7 +135,7 @@ A fast and simple task queue using Firebase.
       results = [reverse(item['text']) for item in batch]
       return [{'text': t} for t in results]
   ```
-  
+
   <details><summary><b>Instructions to run the worker example</b></summary>
   <p>
 
@@ -156,7 +156,7 @@ A fast and simple task queue using Firebase.
     - Set the `GOOGLE_APPLICATION_CREDENTIALS` env:
 
       ```sh
-      export GOOGLE_APPLICATION_CREDENTIALS='/path/to/credentials.json'
+      %env GOOGLE_APPLICATION_CREDENTIALS='/path/to/credentials.json'
       ```
 
     - Start the example worker
