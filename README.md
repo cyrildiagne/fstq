@@ -48,7 +48,8 @@ A fast and simple task queue using Firebase.
    npm install -g firebase-tools && firebase init
    ```
 
-3. Install the fstq CLI (dev)
+3. Deploy the functions and firestore configuration
+4. Install the fstq CLI (dev)
 
    ```sh
    git clone https://github.com/cyrildiagne/fstq
@@ -183,6 +184,21 @@ A fast and simple task queue using Firebase.
           --credentials '/path/to/worker/credentials.json' \
           --max_batch_size 5
       ```
+
+    </p></details>
+
+    <details><summary>From a Jupyter notebook / Colab</summary>
+    <p>
+
+    - If you're using Colab, upload the credentials json
+    - Set the `GOOGLE_APPLICATION_CREDENTIALS` env in the notebook:
+
+      ```sh
+      export GOOGLE_APPLICATION_CREDENTIALS='/path/to/credentials.json'
+      ```
+
+    - Simply run the cell that contains the `@fstq.process` decorated function
+      and it will start pulling and processing items.
 
     </p></details>
 

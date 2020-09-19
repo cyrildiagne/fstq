@@ -28,7 +28,10 @@ def _pull_items(transaction, query_ref, queued_ref, result_ref):
     return docs
 
 
-def _start(queue, handler, max_batch_size, root_collection_name):
+def _start(queue,
+           handler,
+           max_batch_size,
+           root_collection_name=Collections.ROOT.value):
     # Limit to 250 to respect firestore's num transactions limit of 500
     # combining writes and deletes.
     # https://firebase.google.com/docs/firestore/manage-data/transactions

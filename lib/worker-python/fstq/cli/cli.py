@@ -7,6 +7,7 @@ from . import docker, metrics
 from fstq.common import Collections, Metrics
 
 firebase_admin.initialize_app()
+db = firebase_admin.firestore.client()
 
 
 @click.command()
@@ -14,10 +15,7 @@ firebase_admin.initialize_app()
 @click.option("--project", required=True, help="The Firebase project id.")
 def create(queue: str, project: str):
     """Create a new queue."""
-    #TODO: Make sure Firestore is enabled in project
-
     # Get queue doc ref.
-    db = firebase_admin.firestore.client()
     queue_col = db.collection(Collections.ROOT).document(queue)
     # Initialize metrics.
     metrics_doc = queue_col.collection(
@@ -25,14 +23,12 @@ def create(queue: str, project: str):
     # Make sure queue doesn't exists already.
     if metrics_doc.get().exists:
         raise Exception('Error: Queue already exists')
+    # Set initial metrics.
     metrics_doc.set({
         Metrics.NUM_QUEUED: 0,
         Metrics.NUM_PROCESSED: 0,
         Metrics.NUM_FAILED: 0,
     })
-
-    #TODO: Deploy the Functions
-
     print(f'Queue "{queue}" created.')
 
 
@@ -93,7 +89,6 @@ def end():
 @click.argument("queue")
 def monitor(queue: str):
     """Print queue metrics."""
-    db = firebase_admin.firestore.client()
     metrics.snapshot(db, queue)
 
 
