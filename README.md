@@ -135,7 +135,7 @@ A fast and simple task queue using Firebase.
       results = [reverse(item['text']) for item in batch]
       return [{'text': t} for t in results]
   ```
-
+  
   <details><summary><b>Instructions to run the worker example</b></summary>
   <p>
 
@@ -156,7 +156,7 @@ A fast and simple task queue using Firebase.
     - Set the `GOOGLE_APPLICATION_CREDENTIALS` env:
 
       ```sh
-      %env GOOGLE_APPLICATION_CREDENTIALS='/path/to/credentials.json'
+      export GOOGLE_APPLICATION_CREDENTIALS='/path/to/credentials.json'
       ```
 
     - Start the example worker
@@ -190,10 +190,10 @@ A fast and simple task queue using Firebase.
     <p>
 
     - If you're using Colab, upload the credentials json
-    - Set the `GOOGLE_APPLICATION_CREDENTIALS` env in the notebook:
+    - Setup the credentials env in the notebook:
 
       ```sh
-      export GOOGLE_APPLICATION_CREDENTIALS='/path/to/credentials.json'
+      %env GOOGLE_APPLICATION_CREDENTIALS='/path/to/credentials.json'
       ```
 
     - Simply run the cell that contains the `@fstq.process` decorated function
