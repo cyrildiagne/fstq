@@ -2,8 +2,6 @@ import * as firebase from 'firebase/app'
 import 'firebase/firestore'
 import 'firebase/functions'
 
-let app: firebase.app.App
-
 // Collections names
 enum Collections {
   // Root collection name
@@ -34,6 +32,9 @@ interface FSTQ {
   push: (queueName: string, payload: any) => Promise<Task>
 }
 
+let app: firebase.app.App
+let db: firebase.firestore.Firestore
+
 interface Task {
   id: string
   result: () => Promise<any>
@@ -41,8 +42,13 @@ interface Task {
 
 async function init(config: any) {
   app = firebase.initializeApp(config)
+  db = firebase.firestore()
   // Use the local functions in dev environment.
   if (process.env.NODE_ENV === 'development') {
+    db.settings({
+      host: 'localhost:8000',
+      ssl: false,
+    })
     app.functions().useFunctionsEmulator('http://localhost:5001')
   }
 }
@@ -55,13 +61,14 @@ async function push(queue: string, payload: any): Promise<Task> {
     const { id, status } = resp.data
 
     // Listen for changes on returned document and wait for completion.
-    const prom = new Promise((resolve, reject) => {
+    const prom = new Promise(async (resolve, reject) => {
       const doc = firebase
         .firestore()
         .collection(Collections.ROOT)
         .doc(queue)
         .collection(Collections.RESULTS)
         .doc(id)
+
       const unsub = doc.onSnapshot(snap => {
         const result = snap.data()
         switch (result.status) {

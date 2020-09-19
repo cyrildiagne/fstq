@@ -46,6 +46,12 @@ Install the worker lib as an editable package
 pip install -e lib/worker-python
 ```
 
+Point firebase_admin to the firestore emulator
+
+```sh
+export FIRESTORE_EMULATOR_HOST='localhost:8000'
+```
+
 Run the example
 
 ```sh

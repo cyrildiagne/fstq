@@ -6,6 +6,8 @@ import sys
 from . import docker, metrics
 from fstq.common import Collections, Metrics
 
+firebase_admin.initialize_app()
+
 
 @click.command()
 @click.argument("queue")
@@ -15,7 +17,7 @@ def create(queue: str, project: str):
     #TODO: Make sure Firestore is enabled in project
 
     # Get queue doc ref.
-    db = _get_db()
+    db = firebase_admin.firestore.client()
     queue_col = db.collection(Collections.ROOT).document(queue)
     # Initialize metrics.
     metrics_doc = queue_col.collection(
@@ -36,14 +38,23 @@ def create(queue: str, project: str):
 
 @click.command()
 @click.option("--queue", required=True, help="The FSTQ queue.")
+@click.option("--project", required=True, help="The Firebase project id.")
+def delete():
+    """Delete a queue."""
+    #TODO: Delete the queue
+    print('WIP')
+
+
+@click.command()
+@click.option("--queue", required=True, help="The FSTQ queue.")
 @click.option("--credentials", required=True, help="Path to the credentials.")
 @click.option("--max_batch_size", default=1, help="Max batch size.")
 def process(queue: str, credentials: str, max_batch_size: int):
     """Process the queue locally using Docker."""
-    print('Building the Docker image...')
+    # Build the docker image.
     tag = f'{queue}:latest'
     docker.build(tag)
-    print('Running the Docker image...')
+    # Run the Docker image.
     volumes = [f'{credentials}:/credentials.json']
     env = {'GOOGLE_APPLICATION_CREDENTIALS': '/credentials.json'}
     cmd = ['python', 'main.py']
@@ -62,14 +73,16 @@ def deploy(queue: str, project: str):
     #TODO: Set a Kubernetes secret with the Firebase credentials provided
     #TODO: Build a Docker image from the cwd and push it to GCR
     #TODO: Create/update a deployment using the image built and the secret
+
     #TODO: Deploy the gkeAutoscaler fn with a firestore trigger on the queue
+
     print('WIP')
 
 
 @click.command()
 @click.option("--project", required=True, help="The Firebase project id.")
-def delete():
-    """Delete a GKE worker pool."""
+def end():
+    """End a worker pool."""
     #TODO: Delete the deployment
     #TODO: Scale down node pool to 0
     #TODO: Delete the gkeAutoscaler fn
@@ -80,19 +93,13 @@ def delete():
 @click.argument("queue")
 def monitor(queue: str):
     """Print queue metrics."""
-    db = _get_db()
+    db = firebase_admin.firestore.client()
     metrics.snapshot(db, queue)
 
 
 @click.group()
 def main():
     pass
-
-
-def _get_db():
-    firebase_admin.initialize_app()
-    db = firebase_admin.firestore.client()
-    return db
 
 
 main.add_command(create)

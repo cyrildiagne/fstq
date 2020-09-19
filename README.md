@@ -55,19 +55,6 @@ A fast and simple task queue using Firebase.
    pip install fstq/lib/worker-python
    ```
 
-4. Setup [security rules]() to restrict access to the queues. A minimal example:
-
-   ```sh
-   rules_version = '2';
-   service cloud.firestore {
-     match /databases/{database}/documents {
-       match /fstq/{queue}/results/{doc} {
-         allow read: if true;
-       }
-     }
-   }
-   ```
-
 ## 1. Create a queue
 
 - Simply run
@@ -232,19 +219,19 @@ A fast and simple task queue using Firebase.
   Output:
 
   ```
-  ┌──────────────────────────────────────────────┐
-  │ fstq-demo                                    │
-  ├──────────────────────────────────────────────┤
-  │ Queued:                      52 items        │
-  │ Processed:                   3045 items      │
-  │ Failed:                      20 items        │
-  │ Failed (last hour):          0 items         │
-  │ Incoming rate:               3 items/s       │
-  │ Processing rate:             2 items/s       │
-  │ Avg latency:                 2400 ms         │
-  │ Local Workers:               1               │
-  │ GKE Workers:                 3 / 16          │
-  └──────────────────────────────────────────────┘
+  ┌──────────────────────────────────────────────────┐
+  │ fstq-demo                                        │
+  ├──────────────────────────────────────────────────┤
+  │ Queued:                      52 items            │
+  │ Processed:                   3045 items          │
+  │ Failed:                      20 items            │
+  │ Failed (last hour):          0 items             │
+  │ Incoming rate:               3 items/s           │
+  │ Processing rate:             2 items/s           │
+  │ Avg latency:                 2400 ms             │
+  │ Local Workers:               1                   │
+  │ GKE Workers:                 3 (target: 8)       │
+  └──────────────────────────────────────────────────┘
   ```
 
   <!--

@@ -11,7 +11,6 @@ const cors = require('cors')({ origin: true })
 
 // The Firebase Admin SDK to access Cloud Firestore.
 const admin = require('firebase-admin')
-admin.initializeApp()
 
 // Get a db handle.
 const db = admin.firestore()
@@ -49,6 +48,7 @@ exports.push = functions.https.onRequest((req, res) => {
       })
       // Commit writes.
       await batch.commit()
+
       // Send back a message that we've succesfully written the message.
       res.json({ data: { id: resultItemDoc.id, status: Status.QUEUED } })
     } catch (e) {
