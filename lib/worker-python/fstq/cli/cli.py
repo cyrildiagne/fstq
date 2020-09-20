@@ -59,10 +59,14 @@ def create(queue: str, project: str):
 @click.command()
 @click.option("--queue", required=True, help="The FSTQ queue.")
 @click.option("--project", required=True, help="The Firebase project id.")
-def delete():
+def delete(queue: str, project: str):
     """Delete a queue."""
     print('** WIP **')
-    #TODO: Delete the queue
+    # Run the gke stop if a node pool exists for that queue
+    if gke.node_pool_exists(queue, project):
+        stop(queue, project)
+
+    # TODO: Delete the queue
 
 
 @click.command()
@@ -96,7 +100,7 @@ def deploy(queue: str, project: str, max_batch_size: int, min_workers: int,
     """Deploy a worker to GKE."""
     print('** WIP **')
 
-    # Cancel if a node pool already exists for that queue
+    # Check if a node pool already exists for that queue
     if gke.node_pool_exists(queue, project):
         print(f'Using existing {queue} nodepool with existing configuration.')
     else:
@@ -110,7 +114,6 @@ def deploy(queue: str, project: str, max_batch_size: int, min_workers: int,
         print(f'Node pool created.')
 
     # TODO: Build a Docker image from the cwd and push it to GCR
-    # TODO: Ensure that gcloud is installed and configured
     # TODO: Create/update a deployment using the image built and the secret
 
     # Configure autoscaler values

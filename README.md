@@ -1,6 +1,6 @@
 # FSTQ
 
-A fast and simple task queue using Firebase.
+A fast and simple task queue with Firebase.
 
 **Status:** Experimental 🧪
 
@@ -213,12 +213,6 @@ A fast and simple task queue using Firebase.
 
     - Make sure you've installed and setup [gcloud](#).
 
-    - Deploy the gkeAutoscaler function:
-
-      ```sh
-      firebase deploy --only functions:gkeAutoscaler
-      ```
-
     - Deploy the worker's image and attach a gpu node pool to the queue
 
       ```sh
@@ -230,6 +224,12 @@ A fast and simple task queue using Firebase.
           --gpu nvidia-tesla-t4 \
           --min_workers 0 \
           --max_workers 5
+      ```
+
+    - Deploy the gkeAutoscaler function:
+
+      ```sh
+      firebase deploy --only functions:gkeAutoscaler
       ```
 
       </p></details>

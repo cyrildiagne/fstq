@@ -20,7 +20,8 @@ const gkeMetadataCache = {}
 
 const metricsCol = `${Collections.ROOT}/{queue}/${Collections.METADATA}/metrics`
 exports.gkeAutoscaler = functions
-  .runWith({ timeoutSeconds: 300 })
+ // We must give enough time for the resize operation to complete.
+.runWith({ timeoutSeconds: 300 })
   .firestore.document(metricsCol)
   .onUpdate(async (change, context) => {
     // In the emulator, params is filled with undefined objects so we get
@@ -120,7 +121,7 @@ exports.gkeAutoscaler = functions
  */
 async function getOpLock(queue, projectId) {
   return new Promise(async resolve => {
-    // Get initial timestamp.
+    // Get an initial timestamp.
     const timestamp = Date.now()
     // Get ref to the gke metadata document.
     const queueRef = db.collection(Collections.ROOT).doc(queue)
