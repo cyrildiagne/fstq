@@ -2,6 +2,7 @@
   "name": "fstq-push",
   "description": "Push proxy for FSTQ",
   "dependencies": {
+    "@google-cloud/container": "^2.1.1",
     "cors": "^2.8.5",
     "firebase-admin": "~8.12.1",
     "firebase-functions": "^3.7.0"

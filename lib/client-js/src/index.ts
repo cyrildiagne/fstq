@@ -86,7 +86,12 @@ async function push(queue: string, payload: any): Promise<Task> {
 
     return { id, status, result: () => prom } as Task
   } catch (e) {
-    throw e
+    switch (e.code) {
+      case 'not-found':
+        throw new Error(`Queue "${queue}" not found`)
+      default:
+        throw e
+    }
   }
 }
 

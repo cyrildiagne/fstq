@@ -42,19 +42,26 @@ A fast and simple task queue using Firebase.
 ## 1. Setting up FSTQ
 
 1. Create a [Firebase]() project
-2. Install and initialize the [Firebase tools](#)
+2. Log in to your Google account:
+
+   ```sh
+   gcloud auth application-default login
+   ```
+
+3. Install and initialize the [Firebase tools](#)
 
    ```sh
    npm install -g firebase-tools && firebase init
    ```
 
-3. Deploy the functions and firestore configuration
+4. Deploy the functions and firestore configuration
 
    ```sh
-   firebase deploy
+   firebase deploy --only firestore
+   firebase deploy --only functions:push
    ```
 
-4. Install the fstq CLI (dev)
+5. Install the fstq CLI (dev)
 
    ```sh
    git clone https://github.com/cyrildiagne/fstq
@@ -135,7 +142,7 @@ A fast and simple task queue using Firebase.
       results = [reverse(item['text']) for item in batch]
       return [{'text': t} for t in results]
   ```
-  
+
   <details><summary><b>Instructions to run the worker example</b></summary>
   <p>
 
@@ -206,6 +213,12 @@ A fast and simple task queue using Firebase.
 
     - Make sure you've installed and setup [gcloud](#).
 
+    - Deploy the gkeAutoscaler function:
+
+      ```sh
+      firebase deploy --only functions:gkeAutoscaler
+      ```
+
     - Deploy the worker's image and attach a gpu node pool to the queue
 
       ```sh
@@ -214,7 +227,7 @@ A fast and simple task queue using Firebase.
           --queue 'fstq-demo' \
           --credentials '/path/to/worker/credentials.json' \
           --max_batch_size 5 \
-          --gpu nvidia-t4 \
+          --gpu nvidia-tesla-t4 \
           --min_workers 0 \
           --max_workers 5
       ```
@@ -228,7 +241,7 @@ A fast and simple task queue using Firebase.
 - Track some key metrics with the `fstq monitor` command:
 
   ```sh
-  fstq monitor 'fstq-demo'
+  fstq monitor 'fstq-demo' --project 'your-project-id'
   ```
 
   Output:

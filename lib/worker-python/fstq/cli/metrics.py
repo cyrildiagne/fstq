@@ -10,7 +10,7 @@ def snapshot(db, queue: str):
     queue_col = db.collection(Collections.ROOT).document(queue)
     # Ref to the current queue.
     metrics_doc = queue_col.collection(
-        Collections.METADATA.value).document('metrics')
+        Collections.METADATA).document('metrics')
     metrics = metrics_doc.get().to_dict()
     # Print result.
     output = table.render(

@@ -18,7 +18,8 @@ setuptools.setup(
         fstq=fstq.cli.cli:main
     ''',
     install_requires=[
-        'click==7.1.2', 'firebase-admin==4.4.0', 'docker==4.3.1'
+        'click==7.1.2', 'firebase-admin==4.4.0', 'docker==4.3.1',
+        'google-cloud-container==2.1.0'
     ],
     classifiers=[
         "Programming Language :: Python :: 3",

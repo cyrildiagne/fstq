@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class Collections(str, Enum):
+class Collections():
     # Root collection name
     ROOT = 'fstq'
     # Queue collection name
@@ -12,7 +12,7 @@ class Collections(str, Enum):
     METADATA = 'metadata'
 
 
-class Status(str, Enum):
+class Status():
     # Item is queued waiting to be processed.
     QUEUED = 'queued'
     # Item has been processed successfully.
@@ -21,10 +21,26 @@ class Status(str, Enum):
     FAILED = 'failed'
 
 
-class Metrics(str, Enum):
+class Metrics():
     # Number of queued items.
     NUM_QUEUED = 'numQueued'
     # Number of processed items.
     NUM_PROCESSED = 'numProcessed'
     # Number of failed items.
     NUM_FAILED = 'numFailed'
+
+
+class Autoscaler():
+    # Max batch size.
+    MAX_BATCH_SIZE = 'maxBatchSize'
+    # Min number of workers.
+    MIN_WORKERS = 'minWorkers'
+    # Max number of workers.
+    MAX_WORKERS = 'maxWorkers'
+
+
+class Defaults():
+    # Default zone for GKE
+    ZONE = 'us-central1-a'
+    # Default GKE cluster id
+    CLUSTER_ID = 'fstq'

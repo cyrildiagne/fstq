@@ -52,8 +52,18 @@ exports.push = functions.https.onRequest((req, res) => {
       // Send back a message that we've succesfully written the message.
       res.json({ data: { id: resultItemDoc.id, status: Status.QUEUED } })
     } catch (e) {
-      console.log(e)
-      res.status(500).json({ error: e })
+      console.log('error pushing')
+      switch (e.code) {
+        // NOT_FOUND is error code 5. For some reasons, the nodejs firebase
+        // admin lib doesn't have proper types for errors yet:
+        // https://github.com/googleapis/nodejs-firestore/issues/602
+        case 5:
+          res.status(404).json({ error: e })
+          break
+        default:
+          res.status(500).json({ error: e })
+          break
+      }
     }
   })
 })
