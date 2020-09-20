@@ -12,6 +12,8 @@ def snapshot(db, queue: str):
     metrics_doc = queue_col.collection(
         Collections.METADATA).document('metrics')
     metrics = metrics_doc.get().to_dict()
+    if metrics is None:
+        print(f'Queue not found: {queue}')
     # Print result.
     output = table.render(
         queue, {
