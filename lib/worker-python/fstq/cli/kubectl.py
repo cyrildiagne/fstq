@@ -31,7 +31,7 @@ def deploy(queue: str, tag: str, needs_gpu: bool):
         resources = client.V1ResourceRequirements(limits={
             "nvidia.com/gpu": "1",
         })
-    # Configureate Pod template container
+    # Configure Pod template container
     env = client.V1EnvVar(name='GOOGLE_APPLICATION_CREDENTIALS',
                           value='/secrets/credentials.json')
     volumes_mounts = client.V1VolumeMount(name='secrets',

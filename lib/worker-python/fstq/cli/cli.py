@@ -47,8 +47,6 @@ def _stop_worker_pool(queue, project):
     gke.delete_node_pool(queue, project)
     print(f'Done.')
 
-    # TODO: Delete the gkeAutoscaler fn
-
 
 def _init_autoscaler_settings(db, queue, max_batch_size, min_workers,
                               max_workers):
@@ -108,8 +106,6 @@ def deploy(worker_root: str, queue: str, project: str, credentials: str,
            max_batch_size: int, min_workers: int, max_workers: int, gpu: str,
            machine: str, preemptible: bool):
     """Deploy a worker to GKE."""
-    print('** WIP **')
-
     # Check if a node pool already exists for that queue
     if gke.node_pool_exists(queue, project):
         print(f'Using existing {queue} node pool with the same configuration.')
@@ -120,15 +116,13 @@ def deploy(worker_root: str, queue: str, project: str, credentials: str,
                              gpu=gpu,
                              machine=machine,
                              preemptible=preemptible)
-        #TODO: Set a Kubernetes secret with the Firebase credentials provided
         print(f'Node pool created.')
 
     # Generate kubeconfig
     gke.generate_kubeconfig(project)
 
-    tag = f'gcr.io/{project}/{queue}:latest'
-
     print(f'Building image')
+    tag = f'gcr.io/{project}/{queue}:latest'
     # Navigate to worker's root
     init_cwd = os.getcwd()
     os.chdir(worker_root)
@@ -166,7 +160,6 @@ def deploy(worker_root: str, queue: str, project: str, credentials: str,
                               min_workers=min_workers,
                               max_workers=max_workers)
 
-    # TODO: Deploy the gkeAutoscaler fn
     print(f'Done')
 
 

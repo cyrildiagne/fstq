@@ -54,7 +54,6 @@ def run(tag, volumes, env, cmd):
 def push(tag):
     """Push an image to a registry."""
     client = get_client()
-    # img = client.images.get(tag)
     process = client.images.push(tag, stream=True, decode=True)
 
     push_success = None

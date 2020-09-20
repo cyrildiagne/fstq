@@ -1,28 +1,25 @@
 const functions = require('firebase-functions')
-const { Collections } = require('./types')
+const { Collections, Cluster, Metadata } = require('./types')
 const container = require('@google-cloud/container')
+
+// The projectId is required to interact with the cluster.
+const projectId = process.env.GCLOUD_PROJECT
 
 // Create the Cluster Manager Client
 const gke = new container.v1.ClusterManagerClient()
 
 // The Firebase Admin SDK to access Cloud Firestore.
-const admin = require('firebase-admin')
-
-// Get a db handle.
-const db = admin.firestore()
-
-// The projectId is required to interact with the cluster.
-const projectId = process.env.GCLOUD_PROJECT
+const db = require('firebase-admin').firestore()
 
 // A cache object that stores GKE configs for each queue to avoid retrieving
 // the data from Firestore on each metrics update.
 const gkeMetadataCache = {}
 
-const metricsCol = `${Collections.ROOT}/{queue}/${Collections.METADATA}/metrics`
+const metricsPath = `${Collections.ROOT}/{queue}/${Collections.METADATA}/${Metadata.METRICS}`
 exports.gkeAutoscaler = functions
- // We must give enough time for the resize operation to complete.
-.runWith({ timeoutSeconds: 300 })
-  .firestore.document(metricsCol)
+  // We must give enough time for the resize operation to complete.
+  .runWith({ timeoutSeconds: 300 })
+  .firestore.document(metricsPath)
   .onUpdate(async (change, context) => {
     // In the emulator, params is filled with undefined objects so we get
     // the queue name from the resource path.
@@ -32,20 +29,23 @@ exports.gkeAutoscaler = functions
     // Wait until the cluster can be operated or this request becomes outdated.
     const lock = await getOpLock(queue, projectId)
     if (!lock) {
-      console.log(`Resize outdated. Not applying value.`)
+      console.log('Lock is outdated. Skipping.')
       return
     }
     console.log('Got lock!')
 
     // Get updated metrics values
     const { numQueued } = (
-      await queueRef.collection(Collections.METADATA).doc('metrics').get()
+      await queueRef
+        .collection(Collections.METADATA)
+        .doc(Metadata.METRICS)
+        .get()
     ).data()
 
     // Skip if values have changed while we got the lock since the function
     // will be called again with these updated values.
     if (numQueued !== change.after.data().numQueued) {
-      console.log('Values outdated. Skipping.')
+      console.log('Values are outdated. Skipping.')
       return
     }
 
@@ -72,9 +72,9 @@ exports.gkeAutoscaler = functions
     // https://cloud.google.com/kubernetes-engine/docs/reference/rest
     const nodePoolConfig = {
       projectId,
-      clusterId: 'fstq',
+      clusterId: Cluster.DEFAULT_ID,
       nodePoolId: queue,
-      zone: 'us-central1-a',
+      zone: Cluster.DEFAULT_ZONE,
     }
     const resp = await gke.getNodePool(nodePoolConfig)
     if (!resp[0]) {
@@ -158,7 +158,7 @@ async function getOpLock(queue, projectId) {
 async function getRunningOperation(projectId) {
   const ops = await gke.listOperations({
     projectId,
-    zone: 'us-central1-a',
+    zone: Cluster.DEFAULT_ZONE,
   })
   const runningOp = ops[0].operations.find(op => op.status === 'RUNNING')
   if (runningOp) {
