@@ -1,5 +1,5 @@
 from . import table
-from fstq.common import Collections, Metrics
+from fstq.types import Collections, Metrics
 
 import firebase_admin
 import firebase_admin.firestore

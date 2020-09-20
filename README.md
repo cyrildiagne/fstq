@@ -244,7 +244,7 @@ A fast and simple task queue with Firebase.
   fstq monitor 'fstq-demo' --project 'your-project-id'
   ```
 
-  Output:
+  Output (WIP):
 
   ```
   ┌──────────────────────────────────────────────────┐

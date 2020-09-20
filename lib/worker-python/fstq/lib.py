@@ -6,7 +6,7 @@ from google.cloud import firestore
 import os
 import sys
 
-from .common import Collections, Status, Metrics
+from .types import Collections, Status, Metrics
 
 
 @firestore.transactional

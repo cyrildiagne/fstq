@@ -5,7 +5,7 @@ import os
 import sys
 
 from . import docker, metrics, gke
-from fstq.common import Autoscaler, Collections, Defaults, Metrics
+from fstq.types import Autoscaler, Collections, Defaults, Metrics
 
 
 def _init_db(project):

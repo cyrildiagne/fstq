@@ -7,7 +7,7 @@ from google.cloud.container_v1.types import NodeConfig
 from google.cloud.container_v1.types import NodePool
 from google.cloud.container_v1.types import AcceleratorConfig
 
-from fstq.common import Autoscaler, Collections, Defaults, Metrics
+from fstq.types import Autoscaler, Collections, Defaults, Metrics
 
 client = cluster_manager.ClusterManagerClient()
 
@@ -31,6 +31,7 @@ def create_node_pool(queue: str, project: str, gpu: str, machine: str,
     cluster = Defaults.CLUSTER_ID
     # TODO: Ensure that the project has an 'fstq' GKE cluster
     # TODO: Ensure project quotas allow the appropriate resources
+
     # Create a node pool with queue name and selected GPU
     # https://googleapis.dev/python/container/latest/container_v1/services.html
     accelerators = []
@@ -49,10 +50,9 @@ def create_node_pool(queue: str, project: str, gpu: str, machine: str,
     # Initialize the GKE client.
     op = client.create_node_pool(node_pool_request)
     # TODO: wait until the operation has completed.
-    print('WARNING: GKE operation is running in the background')
-    print('Please wait a few minutes for it to comlpete')
+    print('WARNING: The GKE operation is running in the background')
+    print('Please wait a few minutes for it to complete')
     print(op)
-    # TODO: Apply the nvidia drivers if a gpu is requested
 
 
 def delete_node_pool(queue: str, project: str):
@@ -62,6 +62,8 @@ def delete_node_pool(queue: str, project: str):
     try:
         op = client.delete_node_pool(DeleteNodePoolRequest(name=name))
         # TODO: wait until the operation has completed.
+        print('WARNING: The GKE operation is running in the background')
+        print('Please wait a few minutes for it to complete')
         print(op)
     except api_core.exceptions.NotFound:
         print(f'Node pool "{name}" not found.')
