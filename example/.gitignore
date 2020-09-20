@@ -1,2 +1,3 @@
 client/dist/main.js
 client/src/firebase-config.js
+worker/.fstq

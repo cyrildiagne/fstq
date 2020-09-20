@@ -4,13 +4,18 @@ import firebase_admin.firestore
 import os
 import sys
 
-from . import docker, metrics, gke
+from . import docker, metrics, gke, kubectl
 from fstq.types import Autoscaler, Collections, Defaults, Metrics
 
+app = None
 
-def _init_db(project):
+
+def _get_db(project):
     """Initialize the Firestore client."""
-    firebase_admin.initialize_app(None, options={'projectId': project})
+    global app
+    if app is None:
+        app = firebase_admin.initialize_app(None,
+                                            options={'projectId': project})
     db = firebase_admin.firestore.client()
     return db
 
@@ -32,6 +37,19 @@ def _init_metrics(db, queue):
     })
 
 
+def _stop_worker_pool(queue, project):
+    # Delete the deployment
+    print(f'Deleting deployment "{queue}"...')
+    kubectl.delete(queue)
+
+    # Delete the node pool
+    print(f'Deleting node pool "{queue}"...')
+    gke.delete_node_pool(queue, project)
+    print(f'Done.')
+
+    # TODO: Delete the gkeAutoscaler fn
+
+
 def _init_autoscaler_settings(db, queue, max_batch_size, min_workers,
                               max_workers):
     # Get the queue doc ref.
@@ -51,22 +69,9 @@ def _init_autoscaler_settings(db, queue, max_batch_size, min_workers,
 def create(queue: str, project: str):
     """Create a new queue."""
     # Initialize the Firestore client
-    db = _init_db(project)
+    db = _get_db(project)
     _init_metrics(db, queue)
     print(f'Queue "{queue}" created.')
-
-
-@click.command()
-@click.option("--queue", required=True, help="The FSTQ queue.")
-@click.option("--project", required=True, help="The Firebase project id.")
-def delete(queue: str, project: str):
-    """Delete a queue."""
-    print('** WIP **')
-    # Run the gke stop if a node pool exists for that queue
-    if gke.node_pool_exists(queue, project):
-        stop(queue, project)
-
-    # TODO: Delete the queue
 
 
 @click.command()
@@ -87,24 +92,29 @@ def process(queue: str, credentials: str, max_batch_size: int):
 
 
 @click.command()
+@click.argument('worker_root')
 @click.option("--queue", required=True, help="The FSTQ queue.")
 @click.option("--project", required=True, help="The Firebase project id.")
+@click.option("--credentials",
+              required=True,
+              help="Path to the firebase credentials.")
 @click.option("--max_batch_size", default=1, help="Max batch size.")
 @click.option("--min_workers", default=0, help="Min number of workers.")
 @click.option("--max_workers", default=8, help="Max number of workers.")
 @click.option("--gpu", help="GPU.")
 @click.option("--machine", default="n1-standard-2", help="The machine type.")
 @click.option("--preemptible", default=False, help="Flag for preemptible.")
-def deploy(queue: str, project: str, max_batch_size: int, min_workers: int,
-           max_workers: int, gpu: str, machine: str, preemptible: bool):
+def deploy(worker_root: str, queue: str, project: str, credentials: str,
+           max_batch_size: int, min_workers: int, max_workers: int, gpu: str,
+           machine: str, preemptible: bool):
     """Deploy a worker to GKE."""
     print('** WIP **')
 
     # Check if a node pool already exists for that queue
     if gke.node_pool_exists(queue, project):
-        print(f'Using existing {queue} nodepool with existing configuration.')
+        print(f'Using existing {queue} node pool with the same configuration.')
     else:
-        print(f'Creating nodepool...')
+        print(f'Creating node pool')
         gke.create_node_pool(queue,
                              project,
                              gpu=gpu,
@@ -113,11 +123,43 @@ def deploy(queue: str, project: str, max_batch_size: int, min_workers: int,
         #TODO: Set a Kubernetes secret with the Firebase credentials provided
         print(f'Node pool created.')
 
-    # TODO: Build a Docker image from the cwd and push it to GCR
-    # TODO: Create/update a deployment using the image built and the secret
+    # Generate kubeconfig
+    gke.generate_kubeconfig(project)
+
+    tag = f'gcr.io/{project}/{queue}:latest'
+
+    print(f'Building image')
+    # Navigate to worker's root
+    init_cwd = os.getcwd()
+    os.chdir(worker_root)
+    try:
+        # Build the Docker image
+        docker.build(tag)
+    except Exception as e:
+        print(e)
+        os.chdir(init_cwd)
+        exit()
+    # Go back to initial dir
+    os.chdir(init_cwd)
+    print(f'Image built.')
+
+    # Push the image to the GCR
+    print(f'Pushing image to {tag}')
+    docker.push(tag)
+
+    # Push the credentials
+    print('Pushing credentials as cluster secret')
+    with open(credentials) as f:
+        kubectl.push_credentials(f.read())
+
+    # Apply the deployment using the image built
+    print(f'Launching deployment')
+    needs_gpu = gpu is not None
+    kubectl.deploy(queue, tag, needs_gpu)
 
     # Configure autoscaler values
-    db = _init_db(project)
+    print(f'Updating autoscaler metadata')
+    db = _get_db(project)
     _init_autoscaler_settings(db,
                               queue,
                               max_batch_size=max_batch_size,
@@ -125,6 +167,7 @@ def deploy(queue: str, project: str, max_batch_size: int, min_workers: int,
                               max_workers=max_workers)
 
     # TODO: Deploy the gkeAutoscaler fn
+    print(f'Done')
 
 
 @click.command()
@@ -132,15 +175,7 @@ def deploy(queue: str, project: str, max_batch_size: int, min_workers: int,
 @click.option("--project", required=True, help="The Firebase project id.")
 def stop(queue: str, project: str):
     """Stops a worker pool."""
-    print('** WIP **')
-
-    # TODO: Delete the deployment
-
-    # Delete the node pool
-    print(f'Deleting node pool "{queue}"...')
-    gke.delete_node_pool(queue, project)
-
-    # TODO: Delete the gkeAutoscaler fn
+    _stop_worker_pool(queue, project)
 
 
 @click.command()
@@ -148,7 +183,7 @@ def stop(queue: str, project: str):
 @click.option("--project", required=True, help="The Firebase project id.")
 def monitor(queue: str, project: str):
     """Print queue metrics."""
-    db = _init_db(project)
+    db = _get_db(project)
     metrics.snapshot(db, queue)
 
 
@@ -160,7 +195,6 @@ def main():
 
 # Queue management
 main.add_command(create)
-main.add_command(delete)
 
 # Worker commands
 main.add_command(process)

@@ -62,6 +62,7 @@ python main.py
 ### With Docker:
 
 ```sh
+cd example/worker
 cp -r ../../lib/worker-python .fstq
 fstq run --queue 'my-queue' --credentials '/path/to/credentials.json'
 rm -rf .fstq

@@ -14,7 +14,7 @@ def get_client():
 def build(tag):
     """Build a Docker image."""
     if not os.path.exists('./Dockerfile'):
-        exit('Could not find Dockerfile in current context.')
+        raise Exception('Could not find Dockerfile in current context.')
 
     # Build Docker image.
     client = get_client()
@@ -33,7 +33,7 @@ def build(tag):
         else:
             print(line)
     if not build_success:
-        exit('Error building Docker image')
+        raise Exception('Error building image')
 
 
 def run(tag, volumes, env, cmd):
@@ -49,3 +49,18 @@ def run(tag, volumes, env, cmd):
     process = container.logs(stream=True)
     for line in process:
         sys.stdout.write(line.decode())
+
+
+def push(tag):
+    """Push an image to a registry."""
+    client = get_client()
+    # img = client.images.get(tag)
+    process = client.images.push(tag, stream=True, decode=True)
+
+    push_success = None
+    for line in process:
+        if 'status' in line and 'latest: digest' in line['status'].lower():
+            push_success = True
+        print(line)
+    if not push_success:
+        raise Exception('Error pushing image')

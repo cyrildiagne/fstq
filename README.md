@@ -213,6 +213,12 @@ A fast and simple task queue with Firebase.
 
     - Make sure you've installed and setup [gcloud](#).
 
+    - Make sure docker is configured to be able to push to gcr:
+
+      ```sh
+      gcloud auth configure-docker
+      ```
+
     - Deploy the worker's image and attach a gpu node pool to the queue
 
       ```sh

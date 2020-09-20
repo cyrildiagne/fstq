@@ -3,13 +3,45 @@ from google.cloud.container_v1.services import cluster_manager
 from google.cloud.container_v1.types import CreateNodePoolRequest
 from google.cloud.container_v1.types import DeleteNodePoolRequest
 from google.cloud.container_v1.types import GetNodePoolRequest
+from google.cloud.container_v1.types import GetOperationRequest
+from google.cloud.container_v1.types import GetServerConfigRequest
 from google.cloud.container_v1.types import NodeConfig
 from google.cloud.container_v1.types import NodePool
 from google.cloud.container_v1.types import AcceleratorConfig
+import subprocess
+import time
 
 from fstq.types import Autoscaler, Collections, Defaults, Metrics
 
 client = cluster_manager.ClusterManagerClient()
+
+
+def _wait_complete(operation, project: str, wait_seconds: int = 1):
+    """Blocks until an operation completes."""
+    zone = Defaults.ZONE
+    op_name = f'projects/{project}/locations/{zone}/operations/{operation.name}'
+    while True:
+        time.sleep(wait_seconds)
+        op = client.get_operation(GetOperationRequest(name=op_name))
+        if op.end_time:
+            return True
+
+
+def generate_kubeconfig(project: str):
+    zone = Defaults.ZONE
+    cluster = Defaults.CLUSTER_ID
+    process = subprocess.Popen([
+        'gcloud', 'container', 'clusters', 'get-credentials', cluster,
+        '--zone', zone, '--project', project
+    ])
+    for line in process.communicate():
+        if line is None:
+            continue
+        output, error = line
+        if error:
+            print(error)
+        if output:
+            print(output)
 
 
 def node_pool_exists(queue: str, project: str):
@@ -39,9 +71,14 @@ def create_node_pool(queue: str, project: str, gpu: str, machine: str,
         accelerators = [
             AcceleratorConfig(accelerator_type=gpu, accelerator_count=1)
         ]
+    oauth_scopes = [
+        'https://www.googleapis.com/auth/cloud-platform',
+        'https://www.googleapis.com/auth/devstorage.read_only',
+    ]
     node_config = NodeConfig(machine_type=machine,
                              preemptible=preemptible,
-                             accelerators=accelerators)
+                             accelerators=accelerators,
+                             oauth_scopes=oauth_scopes)
     node_pool = NodePool(name=queue, config=node_config, initial_node_count=1)
     node_pool_request = CreateNodePoolRequest(project_id=project,
                                               zone=zone,
@@ -49,10 +86,8 @@ def create_node_pool(queue: str, project: str, gpu: str, machine: str,
                                               node_pool=node_pool)
     # Initialize the GKE client.
     op = client.create_node_pool(node_pool_request)
-    # TODO: wait until the operation has completed.
-    print('WARNING: The GKE operation is running in the background')
-    print('Please wait a few minutes for it to complete')
-    print(op)
+    # Wait until the operation has completed.
+    _wait_complete(op, project)
 
 
 def delete_node_pool(queue: str, project: str):
@@ -61,9 +96,7 @@ def delete_node_pool(queue: str, project: str):
     name = f'projects/{project}/locations/{zone}/clusters/{cluster}/nodePools/{queue}'
     try:
         op = client.delete_node_pool(DeleteNodePoolRequest(name=name))
-        # TODO: wait until the operation has completed.
-        print('WARNING: The GKE operation is running in the background')
-        print('Please wait a few minutes for it to complete')
-        print(op)
+        # Wait until the operation has completed.
+        _wait_complete(op, project)
     except api_core.exceptions.NotFound:
         print(f'Node pool "{name}" not found.')

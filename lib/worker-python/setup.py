@@ -19,7 +19,7 @@ setuptools.setup(
     ''',
     install_requires=[
         'click==7.1.2', 'firebase-admin==4.4.0', 'docker==4.3.1',
-        'google-cloud-container==2.1.0'
+        'google-cloud-container==2.1.0', 'kubernetes==11.0.0'
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
