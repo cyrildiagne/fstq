@@ -1,6 +1,6 @@
 # FSTQ
 
-A simple task queue template for Firebase, designed to bring long-running GPU inference (> 1s) in production applications.
+A simple task queue template for Firebase.
 
 **Status:** Experimental 🧪
 
