@@ -208,7 +208,7 @@ A fast and simple task queue with Firebase.
 
     </p></details>
 
-    <details><summary>Remotely in a cluster of GPU</summary>
+    <details><summary>Remotely in a GKE cluster</summary>
     <p>
 
     - Make sure you've installed and setup [gcloud](#).
@@ -259,10 +259,11 @@ A fast and simple task queue with Firebase.
   │ Queued:                      52 items            │
   │ Processed:                   3045 items          │
   │ Failed:                      20 items            │
-  │ Failed (last hour):          0 items             │
+  ├──────────────────────────────────────────────────┤
   │ Incoming rate:               3 items/s           │
   │ Processing rate:             2 items/s           │
   │ Avg latency:                 2400 ms             │
+  ├──────────────────────────────────────────────────┤
   │ Local Workers:               1                   │
   │ GKE Workers:                 3 (target: 8)       │
   └──────────────────────────────────────────────────┘

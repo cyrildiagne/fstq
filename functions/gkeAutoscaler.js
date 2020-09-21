@@ -16,6 +16,8 @@ const db = require('firebase-admin').firestore()
 const gkeMetadataCache = {}
 
 const metricsPath = `${Collections.ROOT}/{queue}/${Collections.METADATA}/${Metadata.METRICS}`
+// TODO: Ensure function is idempotent
+// https://cloud.google.com/blog/products/serverless/cloud-functions-pro-tips-building-idempotent-functions
 exports.gkeAutoscaler = functions
   // We must give enough time for the resize operation to complete.
   .runWith({ timeoutSeconds: 300 })
@@ -91,6 +93,7 @@ exports.gkeAutoscaler = functions
 
     // Exit if target is same as current node count.
     if (target == nodePool.initialNodeCount) {
+      console.log(`Node count and target are identical (${target}). Skipping.`)
       return
     }
 
@@ -129,11 +132,11 @@ async function getOpLock(queue, projectId) {
     // Start loop
     while (true) {
       // TODO: Perform operation as a transaction to avoid race conditions.
-      // Get latestLockTimestamp on firestore.
+      // Get latestLockTimestamp from firestore.
       const lockTimestamp = (await gkeRef.get()).data().lockTimestamp
       // Check if up to date.
       if (lockTimestamp && lockTimestamp > timestamp) {
-        resolve(false) // This request is outdated.
+        resolve(false) // This request is now outdated.
         return
       }
       // Set latestLockTimestamp on firestore.
