@@ -247,7 +247,7 @@ A simple task queue template for Firebase.
 
   ```
   ┌──────────────────────────────────────────────────┐
-  │ fstq-demo                                        │
+  │ fstq-demo (my-firebase-project)                  │
   ├──────────────────────────────────────────────────┤
   │ Queued:                      52 items            │
   │ Processed:                   3045 items          │
