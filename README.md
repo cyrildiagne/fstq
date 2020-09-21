@@ -202,6 +202,14 @@ A fast and simple task queue with Firebase.
       ```sh
       %env GOOGLE_APPLICATION_CREDENTIALS='/path/to/credentials.json'
       ```
+      
+    - Setup the queue env in the notebook:
+
+      ```sh
+      %env FSTQ_PROJECT_ID='your-project-id'
+      %env FSTQ_QUEUE='fstq-demo'
+      %env FSTQ_MAX_BATCH_SIZE=5
+      ```
 
     - Simply run the cell that contains the `@fstq.process` decorated function
       and it will start pulling and processing items.
