@@ -2,6 +2,31 @@
 
 A simple task queue template for Firebase.
 
+<!-- - **Ideal for intensive GPU inference**
+  FSTQ's queue / worker architecture is
+  ideal for long running GPU processes (> 1s) since concurrency is hard to
+  manage on GPU via HTTP and autoscaling production GPUs is often slow.
+- **Never timeout**
+  Your service will have no problem handling surges of
+  thousands of QPS (which would be very difficult to handle on GPU via HTTP).
+  FSTQ makes sure all payloads are stored until a worker becomes available, and
+  serves the results back as soon as they're ready.
+- **Add new workers at anytime, from anywhere**
+  You can quickly connect new
+  workers from any environment to help process the queue: For instance you
+  could start processing the queue with your home computer, then add your work's
+  computer at night and even use some GPUs from Colab during traffic bursts.
+- **Autoscale remote GPU Workers**
+  You can also easily add a cluster of remote
+  GPUs that will automatically scale with the rate of items being added/processed.
+- **Dynamic batching**
+  Items are automatically and dynamically bulked in
+  batches to dramatically speep up GPU inference.
+- **Always processed once**
+  FSTQ guarantees that each item will only be processed
+  once even if multiple workers are listening to the queue at the same time. -->
+
+
 **Status:** Experimental 🧪
 
 ## 1. Setting up FSTQ
