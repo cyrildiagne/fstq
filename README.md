@@ -6,7 +6,22 @@ A simple task queue template for Firebase, designed to bring long-running GPU in
 
 ## 1. Setting up FSTQ
 
-1. Create a [Firebase]() project
+1. Create a [Firebase](http://firebase.google.com) project if you don't already have one
+2. Install the FSTQ cli and lib
+  
+   ```sh
+   git clone https://github.com/cyrildiagne/fstq
+   pip install fstq/lib/worker-python
+   ```
+
+3. Initialize the project
+
+   ```sh
+   fstq init 'your-firebase-project-id'
+   ```
+
+
+<!--
 2. Log in to your Google account:
 
    ```sh
@@ -38,12 +53,13 @@ A simple task queue template for Firebase, designed to bring long-running GPU in
    firebase deploy --only firestore
    firebase deploy --only functions:push
    ```
+-->
 
 ## 1. Create a queue
 
 - Simply run
   ```sh
-  fstq create 'fstq-demo' --project 'your-firebase-project-id'
+  fstq create 'fstq-demo'
   ```
 
 ## 2. Push items to the queue
@@ -201,7 +217,6 @@ A simple task queue template for Firebase, designed to bring long-running GPU in
 
       ```sh
       fstq deploy ./example/worker \
-          --project 'your-firebase-project-id'
           --queue 'fstq-demo' \
           --credentials '/path/to/worker/credentials.json' \
           --max_batch_size 5 \
@@ -225,7 +240,7 @@ A simple task queue template for Firebase, designed to bring long-running GPU in
 - Track some key metrics with the `fstq monitor` command:
 
   ```sh
-  fstq monitor 'fstq-demo' --project 'your-project-id'
+  fstq monitor 'fstq-demo'
   ```
 
   Output (WIP):
