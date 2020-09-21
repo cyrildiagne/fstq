@@ -1,43 +1,8 @@
 # FSTQ
 
-A fast and simple task queue with Firebase.
+A simple task queue template for Firebase, designed to bring long-running GPU inference (> 1s) in production applications.
 
 **Status:** Experimental 🧪
-
-<!-- - **Ideal for intensive GPU inference**
-
-  FSTQ's queue / worker architecture is
-  ideal for long running GPU processes (> 1s) since concurrency is hard to
-  manage on GPU via HTTP and autoscaling production GPUs is often slow.
-
-- **Never timeout**
-
-  Your service will have no problem handling surges of
-  thousands of QPS (which would be very difficult to handle on GPU via HTTP).
-  FSTQ makes sure all payloads are stored until a worker becomes available, and
-  serves the results back as soon as they're ready.
-
-- **Add new workers at anytime, from anywhere**
-
-  You can quickly connect new
-  workers from any environment to help process the queue: For instance you
-  could start processing the queue with your home computer, then add your work's
-  computer at night and even use some GPUs from Colab during traffic bursts.
-
-- **Autoscale remote GPU Workers**
-
-  You can also easily add a cluster of remote
-  GPUs that will automatically scale with the rate of items being added/processed.
-
-- **Dynamic batching**
-
-  Items are automatically and dynamically bulked in
-  batches to dramatically speep up GPU inference.
-
-- **Always processed once**
-
-  FSTQ guarantees that each item will only be processed
-  once even if multiple workers are listening to the queue at the same time. -->
 
 ## 1. Setting up FSTQ
 
@@ -54,18 +19,24 @@ A fast and simple task queue with Firebase.
    npm install -g firebase-tools && firebase init
    ```
 
-4. Deploy the functions and firestore configuration
+4. Clone this template
+
+   ```sh
+   git clone https://github.com/cyrildiagne/fstq
+   cd fstq
+   ```
+
+5. Install the CLI and python lib
+
+   ```sh
+   pip install lib/worker-python
+   ```
+
+6. Deploy the functions and firestore configuration
 
    ```sh
    firebase deploy --only firestore
    firebase deploy --only functions:push
-   ```
-
-5. Install the fstq CLI (dev)
-
-   ```sh
-   git clone https://github.com/cyrildiagne/fstq
-   pip install fstq/lib/worker-python
    ```
 
 ## 1. Create a queue
@@ -196,8 +167,7 @@ A fast and simple task queue with Firebase.
     <details><summary>From a Jupyter notebook / Colab</summary>
     <p>
 
-    - If you're using Colab, upload the credentials json
-    - Setup the credentials env in the notebook:
+    - If you're using Colab, upload your credentials json and setup the credentials env:
 
       ```sh
       %env GOOGLE_APPLICATION_CREDENTIALS='/path/to/credentials.json'
