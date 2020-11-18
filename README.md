@@ -2,7 +2,7 @@
 
 A simple task queue template for Firebase.
 
-<!-- - **Ideal for intensive GPU inference**
+- **Ideal for intensive GPU inference**
   FSTQ's queue / worker architecture is
   ideal for long running GPU processes (> 1s) since concurrency is hard to
   manage on GPU via HTTP and autoscaling production GPUs is often slow.
@@ -22,9 +22,11 @@ A simple task queue template for Firebase.
 - **Dynamic batching**
   Items are automatically and dynamically bulked in
   batches to dramatically speep up GPU inference.
+- **Priority management**
+  You can allocate a different priority to each item to control what gets handled first.
 - **Always processed once**
   FSTQ guarantees that each item will only be processed
-  once even if multiple workers are listening to the queue at the same time. -->
+  once even if multiple workers are listening to the queue at the same time.
 
 
 **Status:** Experimental 🧪
